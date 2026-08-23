@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compact Dashboard System</title>
+    <title>Dashboard System</title>
     <style>
         * {
             box-sizing: border-box;
@@ -75,7 +75,6 @@
             min-width: 50px;
         }
 
-        /* Resizer Sidebar Right Edge */
         .sidebar-resizer {
             position: absolute;
             top: 0;
@@ -164,7 +163,7 @@
             display: none !important;
         }
 
-        /* Title Bar (Darker Background) */
+        /* Title Bar */
         .title-bar {
             height: 32px;
             display: flex;
@@ -184,7 +183,7 @@
             font-weight: 500;
         }
 
-        /* Control Buttons (Win11 Authentic Style) */
+        /* Control Buttons (Matching Win11 Style Color Scheme) */
         .controls {
             display: flex;
             height: 100%;
@@ -204,23 +203,25 @@
         }
 
         .btn-win11:hover {
-            background-color: rgba(255, 255, 255, 0.12);
+            background-color: rgba(255, 255, 255, 0.15);
         }
 
         .btn-win11.btn-close:hover {
-            background-color: #c42b1c !important;
+            background-color: #c42b1c;
         }
 
-        .btn-win11.btn-close:hover svg path {
+        .btn-win11 svg path,
+        .btn-win11 svg rect {
+            fill: #cccccc;
+            transition: fill 0.15s;
+        }
+
+        .btn-win11:hover svg path,
+        .btn-win11:hover svg rect {
             fill: #ffffff;
         }
 
-        .btn-win11 svg {
-            width: 10px;
-            height: 10px;
-        }
-
-        /* Panel Main Body */
+        /* Panel Main Body & Footer */
         .panel-body {
             flex: 1;
             padding: 12px;
@@ -229,7 +230,6 @@
             user-select: text;
         }
 
-        /* Panel Sticky Footer */
         .panel-footer {
             padding: 8px 12px;
             background: rgba(235, 235, 235, 0.9);
@@ -264,12 +264,16 @@
             font-weight: 600;
         }
 
+        /* Consolas Monospace Font untuk Input Ala SAP */
         .form-group input, .form-group select {
             padding: 5px 8px;
             border-radius: 4px;
             border: 1px solid rgba(0, 0, 0, 0.2);
             background: rgba(255, 255, 255, 0.9);
             outline: none;
+            font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 0.3px;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -296,23 +300,69 @@
 </head>
 <body>
 
-    <!-- Dashboard Main View (Sembunyi saat Session Login) -->
+    <!-- Dashboard Main View -->
     <div class="dashboard" id="dashboard">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-resizer" id="sidebarResizer"></div>
-            <div class="brand">App Portal</div>
-            <div class="nav-item active">Dashboard</div>
-            <div class="nav-item">Analytics</div>
-            <div class="nav-item">Inventory</div>
-            <div class="nav-item">Settings</div>
+            <div class="brand" id="i18n-brand">App Portal</div>
+            <div class="nav-item active" id="i18n-nav-dashboard">Dashboard</div>
+            <div class="nav-item" id="i18n-nav-analytics">Analisis</div>
+            <div class="nav-item" id="i18n-nav-inventory">Inventaris</div>
+            <div class="nav-item" id="i18n-nav-settings">Pengaturan</div>
         </div>
         <div class="main-content">
-            <h1>Sistem Utama</h1>
-            <p>Sesi login aktif. Selamat bekerja.</p>
+            <h1 id="i18n-dash-title">Sistem Utama</h1>
+            <p id="i18n-dash-desc">Sesi login aktif. Selamat bekerja.</p>
         </div>
     </div>
 
     <script>
+        // Kamus Bahasa Multibahasa (i18n)
+        const i18nDict = {
+            id: {
+                panelTitle: 'Login Sistem',
+                clientLabel: 'Klien',
+                usernameLabel: 'Nama Pengguna',
+                passwordLabel: 'Kata Sandi',
+                languageLabel: 'Bahasa',
+                signInBtn: 'Masuk',
+                navDashboard: 'Dashboard',
+                navAnalytics: 'Analisis',
+                navInventory: 'Inventaris',
+                navSettings: 'Pengaturan',
+                dashTitle: 'Sistem Utama',
+                dashDesc: 'Sesi login aktif. Selamat bekerja.'
+            },
+            en: {
+                panelTitle: 'System Login',
+                clientLabel: 'Client',
+                usernameLabel: 'Username',
+                passwordLabel: 'Password',
+                languageLabel: 'Language',
+                signInBtn: 'Sign In',
+                navDashboard: 'Dashboard',
+                navAnalytics: 'Analytics',
+                navInventory: 'Inventory',
+                navSettings: 'Settings',
+                dashTitle: 'Main System',
+                dashDesc: 'Login session active. Welcome back.'
+            },
+            jp: {
+                panelTitle: 'システムログイン',
+                clientLabel: 'クライアント',
+                usernameLabel: 'ユーザー名',
+                passwordLabel: 'パスワード',
+                languageLabel: '言語',
+                signInBtn: 'サインイン',
+                navDashboard: 'ダッシュボード',
+                navAnalytics: '分析',
+                navInventory: '在庫',
+                navSettings: '設定',
+                dashTitle: 'メインシステム',
+                dashDesc: 'ログインセッションがアクティブです。'
+            }
+        };
+
         let highestZIndex = 100;
 
         class Win11Panel {
@@ -345,17 +395,17 @@
 
                 this.el.innerHTML = `
                     <div class="title-bar">
-                        <span class="title">${this.title}</span>
+                        <span class="title" id="panelTitleEl">${this.title}</span>
                         <div class="controls">
                             <button class="btn-win11 btn-collapse" title="Minimize/Expand">
-                                <svg viewBox="0 0 10 10"><path d="M0,5 H10" stroke="#ffffff" stroke-width="1.2"/></svg>
+                                <svg viewBox="0 0 10 10"><rect x="0" y="4.5" width="10" height="1.2"/></svg>
                             </button>
                             <button class="btn-win11 btn-max-restore" title="Maximize">
-                                <svg class="icon-max" viewBox="0 0 10 10"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z" fill="#ffffff"/></svg>
-                                <svg class="icon-restore" viewBox="0 0 10 10" style="display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z" fill="#ffffff"/></svg>
+                                <svg class="icon-max" viewBox="0 0 10 10"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z"/></svg>
+                                <svg class="icon-restore" viewBox="0 0 10 10" style="display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z"/></svg>
                             </button>
                             <button class="btn-win11 btn-close" title="Close">
-                                <svg viewBox="0 0 10 10"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z" fill="#ffffff"/></svg>
+                                <svg viewBox="0 0 10 10"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z"/></svg>
                             </button>
                         </div>
                     </div>
@@ -519,27 +569,27 @@
             }
         }
 
-        // Template Body Form
+        // Template Body Form Login
         const loginBodyTemplate = `
             <form class="login-form" id="loginForm">
                 <div class="form-content">
                     <div class="form-group">
-                        <label for="client">Client</label>
+                        <label for="client" id="lbl-client">Klien</label>
                         <input type="text" id="client" form="loginForm" required>
                     </div>
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username" id="lbl-username">Nama Pengguna</label>
                         <input type="text" id="username" form="loginForm" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password" id="lbl-password">Kata Sandi</label>
                         <input type="password" id="password" form="loginForm" required>
                     </div>
                     <div class="form-group">
-                        <label for="language">Language</label>
+                        <label for="language" id="lbl-language">Bahasa</label>
                         <select id="language" form="loginForm">
-                            <option value="en">English (EN)</option>
                             <option value="id">Bahasa Indonesia (ID)</option>
+                            <option value="en">English (EN)</option>
                             <option value="jp">Japanese (JP)</option>
                         </select>
                     </div>
@@ -547,14 +597,14 @@
             </form>
         `;
 
-        // Template Footer Form Action (Akan Selalu Berada di Bawah Window)
+        // Template Footer Action
         const loginFooterTemplate = `
-            <button type="submit" form="loginForm" class="btn-soft btn-submit">Sign In</button>
+            <button type="submit" form="loginForm" class="btn-soft btn-submit" id="btn-submit-text">Masuk</button>
         `;
 
-        // Instance Panel Login
+        // Instance Panel Login Window
         const loginPanel = new Win11Panel({
-            title: 'System Login',
+            title: 'Login Sistem',
             bodyContent: loginBodyTemplate,
             footerContent: loginFooterTemplate,
             x: Math.max(10, (window.innerWidth - 260) / 2),
@@ -563,10 +613,35 @@
             height: 280
         });
 
-        // Submit Logic (Proses Login -> Tampilkan Dashboard)
+        // Real-time Update Bahasa pada Form Login saat Pilihan Bahasa Berubah
+        document.body.addEventListener('change', (e) => {
+            if (e.target.id === 'language') {
+                const lang = e.target.value;
+                const dict = i18nDict[lang] || i18nDict.id;
+                document.getElementById('panelTitleEl').innerText = dict.panelTitle;
+                document.getElementById('lbl-client').innerText = dict.clientLabel;
+                document.getElementById('lbl-username').innerText = dict.usernameLabel;
+                document.getElementById('lbl-password').innerText = dict.passwordLabel;
+                document.getElementById('lbl-language').innerText = dict.languageLabel;
+                document.getElementById('btn-submit-text').innerText = dict.signInBtn;
+            }
+        });
+
+        // Submit Logic (Proses Login -> Update Bahasa Dashboard -> Tampilkan)
         document.body.addEventListener('submit', (e) => {
             if (e.target.id === 'loginForm') {
                 e.preventDefault();
+                const selectedLang = document.getElementById('language').value;
+                const dict = i18nDict[selectedLang] || i18nDict.id;
+
+                // Terapkan Bahasa ke Seluruh UI Dashboard
+                document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
+                document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
+                document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
+                document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
+                document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
+                document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
+
                 loginPanel.close();
                 document.getElementById('dashboard').classList.add('active');
             }
