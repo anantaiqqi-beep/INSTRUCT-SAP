@@ -22,27 +22,31 @@
             user-select: none;
         }
 
-        /* Silver Vertical Gradient Button Style */
-        .btn-silver {
-            background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 50%, #e1e1e1 51%, #d6d6d6 100%);
-            border: 1px solid #adadad;
-            border-radius: 4px;
-            color: #222;
-            padding: 4px 10px;
+        /* Soft Vertical Gradient Rounded Button Style */
+        .btn-soft {
+            background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 6px;
+            color: #242424;
+            padding: 4px 12px;
             cursor: pointer;
             outline: none;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-            transition: all 0.1s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-silver:hover {
-            background: linear-gradient(to bottom, #ffffff 0%, #ebebeb 50%, #d8d8d8 51%, #cccccc 100%);
-            border-color: #8e8e8e;
+        .btn-soft:hover {
+            background: linear-gradient(180deg, #fbfbfb 0%, #e8eaed 100%);
+            border-color: rgba(0, 0, 0, 0.22);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
-        .btn-silver:active {
-            background: linear-gradient(to bottom, #d6d6d6 0%, #e1e1e1 50%, #f0f0f0 51%, #ffffff 100%);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        .btn-soft:active {
+            background: linear-gradient(180deg, #e4e6e9 0%, #eeeff2 100%);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         /* Dashboard Area (Hidden by default) */
@@ -95,7 +99,7 @@
 
         .nav-item {
             padding: 5px 8px;
-            border-radius: 3px;
+            border-radius: 4px;
             color: #1a1a1a;
             cursor: pointer;
             white-space: nowrap;
@@ -126,17 +130,17 @@
         /* Floating Panel Window */
         .win11-panel {
             position: absolute;
-            background: rgba(245, 245, 245, 0.88);
+            background: rgba(245, 245, 245, 0.92);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 6px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             min-width: 200px;
-            min-height: 28px;
+            min-height: 32px;
             touch-action: none;
         }
 
@@ -150,23 +154,24 @@
         }
 
         .win11-panel.collapsed {
-            height: 28px !important;
-            min-height: 28px !important;
+            height: 32px !important;
+            min-height: 32px !important;
         }
 
-        .win11-panel.collapsed .panel-content,
+        .win11-panel.collapsed .panel-body,
+        .win11-panel.collapsed .panel-footer,
         .win11-panel.collapsed .resizer {
             display: none !important;
         }
 
         /* Title Bar (Darker Background) */
         .title-bar {
-            height: 28px;
+            height: 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-left: 8px;
-            background: rgba(30, 30, 30, 0.85);
+            padding-left: 10px;
+            background: rgba(28, 28, 28, 0.88);
             backdrop-filter: blur(10px);
             cursor: default;
             flex-shrink: 0;
@@ -179,42 +184,69 @@
             font-weight: 500;
         }
 
-        /* Control Buttons */
+        /* Control Buttons (Win11 Authentic Style) */
         .controls {
             display: flex;
             height: 100%;
-            align-items: center;
-            gap: 2px;
-            padding-right: 2px;
         }
 
-        .btn-ctrl {
-            width: 22px;
-            height: 20px;
+        .btn-win11 {
+            width: 36px;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 9px;
-            line-height: 1;
-            padding: 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.15s;
         }
 
-        .btn-close:hover {
-            background: linear-gradient(to bottom, #ff6b6b 0%, #c42b1c 100%) !important;
-            border-color: #ab2316 !important;
-            color: #ffffff !important;
+        .btn-win11:hover {
+            background-color: rgba(255, 255, 255, 0.12);
         }
 
-        /* Content Area */
-        .panel-content {
+        .btn-win11.btn-close:hover {
+            background-color: #c42b1c !important;
+        }
+
+        .btn-win11.btn-close:hover svg path {
+            fill: #ffffff;
+        }
+
+        .btn-win11 svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        /* Panel Main Body */
+        .panel-body {
             flex: 1;
             padding: 12px;
             color: #1c1c1c;
-            overflow: auto;
+            overflow-y: auto;
             user-select: text;
         }
 
+        /* Panel Sticky Footer */
+        .panel-footer {
+            padding: 8px 12px;
+            background: rgba(235, 235, 235, 0.9);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
         .login-form {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .form-content {
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -233,9 +265,9 @@
         }
 
         .form-group input, .form-group select {
-            padding: 4px 6px;
-            border-radius: 3px;
-            border: 1px solid rgba(0, 0, 0, 0.25);
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
             background: rgba(255, 255, 255, 0.9);
             outline: none;
         }
@@ -246,8 +278,7 @@
         }
 
         .btn-submit {
-            margin-top: 6px;
-            padding: 5px;
+            width: 100%;
             font-weight: 600;
         }
 
@@ -287,9 +318,10 @@
         class Win11Panel {
             constructor(options = {}) {
                 this.title = options.title || 'Panel Window';
-                this.content = options.content || '';
+                this.bodyContent = options.bodyContent || '';
+                this.footerContent = options.footerContent || '';
                 this.width = options.width || 280;
-                this.height = options.height || 260;
+                this.height = options.height || 280;
                 this.x = options.x || 80;
                 this.y = options.y || 60;
                 this.minWidth = options.minWidth || 200;
@@ -315,12 +347,20 @@
                     <div class="title-bar">
                         <span class="title">${this.title}</span>
                         <div class="controls">
-                            <button class="btn-silver btn-ctrl btn-collapse" title="Collapse/Expand">&#8722;</button>
-                            <button class="btn-silver btn-ctrl btn-max-restore" title="Maximize">&#9633;</button>
-                            <button class="btn-silver btn-ctrl btn-close" title="Close">&#10005;</button>
+                            <button class="btn-win11 btn-collapse" title="Minimize/Expand">
+                                <svg viewBox="0 0 10 10"><path d="M0,5 H10" stroke="#ffffff" stroke-width="1.2"/></svg>
+                            </button>
+                            <button class="btn-win11 btn-max-restore" title="Maximize">
+                                <svg class="icon-max" viewBox="0 0 10 10"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z" fill="#ffffff"/></svg>
+                                <svg class="icon-restore" viewBox="0 0 10 10" style="display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z" fill="#ffffff"/></svg>
+                            </button>
+                            <button class="btn-win11 btn-close" title="Close">
+                                <svg viewBox="0 0 10 10"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z" fill="#ffffff"/></svg>
+                            </button>
                         </div>
                     </div>
-                    <div class="panel-content">${this.content}</div>
+                    <div class="panel-body">${this.bodyContent}</div>
+                    <div class="panel-footer">${this.footerContent}</div>
                     <div class="resizer n"></div>
                     <div class="resizer s"></div>
                     <div class="resizer e"></div>
@@ -337,6 +377,8 @@
                 this.btnCollapse = this.el.querySelector('.btn-collapse');
                 this.btnMaxRestore = this.el.querySelector('.btn-max-restore');
                 this.btnClose = this.el.querySelector('.btn-close');
+                this.iconMax = this.el.querySelector('.icon-max');
+                this.iconRestore = this.el.querySelector('.icon-restore');
 
                 this.el.addEventListener('mousedown', () => this.bringToFront());
                 this.initDrag();
@@ -437,12 +479,10 @@
                 if (!this.isCollapsed) {
                     this.savedHeight = this.el.style.height;
                     this.el.classList.add('collapsed');
-                    this.btnCollapse.innerHTML = '&#43;';
                     this.isCollapsed = true;
                 } else {
                     this.el.classList.remove('collapsed');
                     this.el.style.height = this.savedHeight;
-                    this.btnCollapse.innerHTML = '&#8722;';
                     this.isCollapsed = false;
                 }
             }
@@ -457,7 +497,9 @@
                         height: this.el.offsetHeight
                     };
                     this.el.classList.add('maximized');
-                    this.btnMaxRestore.innerHTML = '&#10064;';
+                    this.iconMax.style.display = 'none';
+                    this.iconRestore.style.display = 'block';
+                    this.btnMaxRestore.title = "Restore";
                     this.isMaximized = true;
                 } else {
                     this.el.classList.remove('maximized');
@@ -465,7 +507,9 @@
                     this.el.style.left = `${this.prevRect.left}px`;
                     this.el.style.width = `${this.prevRect.width}px`;
                     this.el.style.height = `${this.prevRect.height}px`;
-                    this.btnMaxRestore.innerHTML = '&#9633;';
+                    this.iconMax.style.display = 'block';
+                    this.iconRestore.style.display = 'none';
+                    this.btnMaxRestore.title = "Maximize";
                     this.isMaximized = false;
                 }
             }
@@ -475,48 +519,57 @@
             }
         }
 
-        // Template Form Login (Tanpa Placeholder)
-        const loginFormTemplate = `
+        // Template Body Form
+        const loginBodyTemplate = `
             <form class="login-form" id="loginForm">
-                <div class="form-group">
-                    <label for="client">Client</label>
-                    <input type="text" id="client" required>
+                <div class="form-content">
+                    <div class="form-group">
+                        <label for="client">Client</label>
+                        <input type="text" id="client" form="loginForm" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" form="loginForm" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" form="loginForm" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language" form="loginForm">
+                            <option value="en">English (EN)</option>
+                            <option value="id">Bahasa Indonesia (ID)</option>
+                            <option value="jp">Japanese (JP)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="language">Language</label>
-                    <select id="language">
-                        <option value="en">English (EN)</option>
-                        <option value="id">Bahasa Indonesia (ID)</option>
-                        <option value="jp">Japanese (JP)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-silver btn-submit">Sign In</button>
             </form>
+        `;
+
+        // Template Footer Form Action (Akan Selalu Berada di Bawah Window)
+        const loginFooterTemplate = `
+            <button type="submit" form="loginForm" class="btn-soft btn-submit">Sign In</button>
         `;
 
         // Instance Panel Login
         const loginPanel = new Win11Panel({
             title: 'System Login',
-            content: loginFormTemplate,
+            bodyContent: loginBodyTemplate,
+            footerContent: loginFooterTemplate,
             x: Math.max(10, (window.innerWidth - 260) / 2),
-            y: Math.max(10, (window.innerHeight - 260) / 2),
+            y: Math.max(10, (window.innerHeight - 280) / 2),
             width: 260,
-            height: 260
+            height: 280
         });
 
         // Submit Logic (Proses Login -> Tampilkan Dashboard)
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            loginPanel.close();
-            document.getElementById('dashboard').classList.add('active');
+        document.body.addEventListener('submit', (e) => {
+            if (e.target.id === 'loginForm') {
+                e.preventDefault();
+                loginPanel.close();
+                document.getElementById('dashboard').classList.add('active');
+            }
         });
 
         // Sidebar Resizer Logic (Min 50px, Max Window Width - 50px)
