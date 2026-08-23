@@ -26,7 +26,6 @@
             user-select: none;
         }
 
-        /* SAP Signature Top Progress Bar */
         .sap-progress-container {
             position: fixed;
             top: 0;
@@ -105,7 +104,6 @@
             background: #ffffff;
         }
 
-        /* Soft Gradient Button */
         .btn-soft {
             background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
             border: 1px solid rgba(0, 0, 0, 0.15);
@@ -165,26 +163,23 @@
         <div class="sap-progress-bar"></div>
     </div>
 
-    <h1>Pembuatan User Baru (USER_DATA)</h1>
-    <p class="subtitle">Entri akun akan dicatat sesuai urutan kolom Spreadsheet (No, Username, Password, Client).</p>
+    <h1>Pembuatan User Baru</h1>
+    <p class="subtitle">Isi data akun bebas di bawah ini untuk ditambahkan ke sheet USER_DATA.</p>
 
     <form id="createUserForm">
-        <!-- Input Username (Kolom B) -->
         <div class="form-group">
             <label for="username">Nama Pengguna (Username)</label>
-            <input type="text" id="username" placeholder="Masukkan Username" required autocomplete="off">
+            <input type="text" id="username" placeholder="Masukkan Username Bebas" required autocomplete="off">
         </div>
 
-        <!-- Input Password (Kolom C) -->
         <div class="form-group">
             <label for="password">Kata Sandi (Password)</label>
-            <input type="password" id="password" placeholder="Masukkan Password" required>
+            <input type="password" id="password" placeholder="Masukkan Password Bebas" required>
         </div>
 
-        <!-- Input Client (Kolom D) -->
         <div class="form-group">
             <label for="client">ID Klien (Client)</label>
-            <input type="text" id="client" placeholder="Masukkan ID Client" required autocomplete="off">
+            <input type="text" id="client" placeholder="Masukkan ID Client Bebas" required autocomplete="off">
         </div>
 
         <button type="submit" class="btn-soft" id="btnCreateUser">Buat User</button>
@@ -223,13 +218,12 @@
             sapLoader.start();
             btnCreateUser.disabled = true;
 
-            // Payload disesuaikan dengan kebutuhan pemetaan sheet USER_DATA
+            // Mengirim action secara eksplisit 'createUser'
             const payload = {
                 action: 'createUser',
-                sheetName: 'USER_DATA',
-                username: username,  // Kolom B
-                password: password,  // Kolom C
-                client: client       // Kolom D
+                username: username,
+                password: password,
+                client: client
             };
 
             try {
@@ -247,8 +241,8 @@
                 sapLoader.stop();
                 btnCreateUser.disabled = false;
 
-                if (result.success || result.status === 'success') {
-                    showStatus(result.message || 'User berhasil ditambahkan ke sheet USER_DATA.', 'success');
+                if (result.success) {
+                    showStatus(result.message || 'User berhasil ditambahkan ke database.', 'success');
                     form.reset();
                 } else {
                     showStatus(result.message || 'Gagal menambahkan user.', 'error');
@@ -256,7 +250,7 @@
             } catch (err) {
                 sapLoader.stop();
                 btnCreateUser.disabled = false;
-                showStatus('Terjadi kesalahan sistem atau kendala koneksi.', 'error');
+                showStatus('Terjadi kesalahan koneksi atau server.', 'error');
             }
         });
 
