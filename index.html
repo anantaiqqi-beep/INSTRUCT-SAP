@@ -106,16 +106,23 @@
             flex-shrink: 0;
             min-width: 120px;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .sidebar-resizer {
             position: absolute;
             top: 0;
-            right: -3px;
-            width: 6px;
+            right: 0;
+            width: 5px;
             height: 100%;
             cursor: ew-resize;
             z-index: 20;
+            background: transparent;
+            transition: background 0.15s;
+        }
+
+        .sidebar-resizer:hover, .sidebar-resizer.resizing {
+            background: rgba(0, 95, 184, 0.3);
         }
 
         .sidebar .brand {
@@ -135,15 +142,15 @@
         .tree-node {
             display: flex;
             align-items: center;
-            padding: 4px 6px;
-            border-radius: 3px;
+            padding: 5px 6px;
+            border-radius: 4px;
             color: #1a1a1a;
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             gap: 6px;
-            transition: background 0.1s ease;
+            transition: background 0.15s ease, color 0.15s ease;
         }
 
         .tree-node:hover {
@@ -156,15 +163,26 @@
             font-weight: 600;
         }
 
+        /* Modern Chevron Arrow with Smooth Rotation */
         .tree-arrow {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 8px;
-            color: #666;
-            transition: transform 0.15s ease;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tree-arrow svg {
+            width: 10px;
+            height: 10px;
+            fill: #666666;
+            transition: fill 0.15s ease;
+        }
+
+        .tree-node:hover .tree-arrow svg {
+            fill: #1a1a1a;
         }
 
         .tree-arrow.expanded {
@@ -178,15 +196,20 @@
             flex-shrink: 0;
         }
 
+        /* Smooth Expand/Collapse Subtree Container */
         .tree-children {
-            display: none;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
             padding-left: 16px;
+            display: flex;
             flex-direction: column;
             gap: 2px;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tree-children.open {
-            display: flex;
+            opacity: 1;
         }
 
         /* Content Container & Embedded View Styling */
@@ -197,6 +220,7 @@
             flex-direction: column;
             overflow: hidden;
             background: #ffffff;
+            position: relative;
         }
 
         .content-placeholder {
@@ -416,14 +440,16 @@
 
             <!-- Dashboard Root Item -->
             <div class="tree-node active" id="treeNavDashboard">
-                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <span class="tree-arrow" style="visibility: hidden;"></span>
                 <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 1L1 7h2v7h4V10h2v4h4V7h2L8 1z"/></svg>
                 <span id="i18n-nav-dashboard">Dashboard</span>
             </div>
 
             <!-- Parent Folder Node: User Management -->
             <div class="tree-node" id="nodeUserMgmt">
-                <span class="tree-arrow" id="arrowUserMgmt">▶</span>
+                <span class="tree-arrow" id="arrowUserMgmt">
+                    <svg viewBox="0 0 16 16"><path d="M6 3.5a.5.5 0 0 1 .854-.354l4 4a.5.5 0 0 1 0 .708l-4 4A.5.5 0 0 1 6 11.5v-8z"/></svg>
+                </span>
                 <svg class="tree-icon" viewBox="0 0 16 16"><path d="M3 2v12h10V2H3zm9 11H4V3h8v10zM5 5h6v1H5V5zm0 3h6v1H5V8zm0 3h4v1H5v-1z"/></svg>
                 <span id="i18n-nav-usermgmt">User Managements</span>
             </div>
@@ -431,7 +457,7 @@
             <!-- Sub Tree: User Management Options -->
             <div class="tree-children" id="childrenUserMgmt">
                 <div class="tree-node" id="itemCreateUser">
-                    <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                    <span class="tree-arrow" style="visibility: hidden;"></span>
                     <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm2 1H6a4 4 0 00-4 4v1h12v-1a4 4 0 00-4-4z"/></svg>
                     <span>Create User (SU01)</span>
                 </div>
@@ -439,19 +465,19 @@
 
             <!-- Additional Nav Tree Nodes -->
             <div class="tree-node" id="treeNavAnalytics">
-                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <span class="tree-arrow" style="visibility: hidden;"></span>
                 <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 14h14v1H1v-1zm2-3h2v2H3v-2zm4-4h2v6H7V7zm4-5h2v11h-2V2z"/></svg>
                 <span id="i18n-nav-analytics">Analisis</span>
             </div>
 
             <div class="tree-node" id="treeNavInventory">
-                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <span class="tree-arrow" style="visibility: hidden;"></span>
                 <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 3h14v10H1V3zm2 2v6h10V5H3z"/></svg>
                 <span id="i18n-nav-inventory">Inventaris</span>
             </div>
 
             <div class="tree-node" id="treeNavSettings">
-                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <span class="tree-arrow" style="visibility: hidden;"></span>
                 <svg class="tree-icon" viewBox="0 0 16 16"><path d="M9.1 1a1.5 1.5 0 0 0-2.2 0l-.7.7a1.5 1.5 0 0 1-1.6.3l-.9-.4a1.5 1.5 0 0 0-2.1.8l-.4.9a1.5 1.5 0 0 1-1.3 1v1a1.5 1.5 0 0 1 1.3 1l.4.9a1.5 1.5 0 0 0 2.1.8l.9-.4a1.5 1.5 0 0 1 1.6.3l.7.7a1.5 1.5 0 0 0 2.2 0l.7-.7a1.5 1.5 0 0 1 1.6-.3l.9.4a1.5 1.5 0 0 0 2.1-.8l.4-.9a1.5 1.5 0 0 1 1.3-1v-1a1.5 1.5 0 0 1-1.3-1l-.4-.9a1.5 1.5 0 0 0-2.1-.8l-.9.4a1.5 1.5 0 0 1-1.6-.3l-.7-.7zM8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
                 <span id="i18n-nav-settings">Pengaturan</span>
             </div>
@@ -472,7 +498,7 @@
     <script>
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxEZdn2N3GvXlNTfEvImJX0C84bdnrlQfm-qOk_Ce3UJmi78ftKF6xhKZMgMyUFxwPJIA/exec';
         
-        // Target Github URL dialihkan ke CDN raw.githack agar dapat dirender utuh sebagai document
+        // Target Github URL via raw.githack CDN untuk render HTML utuh
         const CREATE_USER_URL = 'https://raw.githack.com/anantaiqqi-beep/INSTRUCT-SAP/baa2501d63d424d4415e6d74cf553558cf1321fc/SU01.html';
 
         const sapLoader = {
@@ -842,7 +868,7 @@
             }
         });
 
-        // SAP Tree Interactivity Logic
+        // SAP Tree Interactivity Logic with Smooth Transitions
         const nodeUserMgmt = document.getElementById('nodeUserMgmt');
         const arrowUserMgmt = document.getElementById('arrowUserMgmt');
         const childrenUserMgmt = document.getElementById('childrenUserMgmt');
@@ -851,14 +877,16 @@
         const defaultContent = document.getElementById('defaultContent');
         const appIframe = document.getElementById('appIframe');
 
-        // Toggle Folder User Management (Expand / Collapse)
+        // Toggle Folder User Management (Smooth Expand / Collapse)
         nodeUserMgmt.addEventListener('click', () => {
             const isOpen = childrenUserMgmt.classList.contains('open');
             if (isOpen) {
+                childrenUserMgmt.style.maxHeight = '0px';
                 childrenUserMgmt.classList.remove('open');
                 arrowUserMgmt.classList.remove('expanded');
             } else {
                 childrenUserMgmt.classList.add('open');
+                childrenUserMgmt.style.maxHeight = childrenUserMgmt.scrollHeight + 'px';
                 arrowUserMgmt.classList.add('expanded');
             }
         });
@@ -899,12 +927,17 @@
             }
         });
 
-        // Drag Resizer Logic for Sidebar
+        // Fixed Drag Resizer Logic for Sidebar
         const sidebar = document.getElementById('sidebar');
         const sidebarResizer = document.getElementById('sidebarResizer');
 
         sidebarResizer.addEventListener('mousedown', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+
+            sidebarResizer.classList.add('resizing');
+            document.body.style.cursor = 'ew-resize';
+
             const onMouseMove = (moveEvent) => {
                 const maxAllowedWidth = window.innerWidth - 100;
                 let newWidth = moveEvent.clientX;
@@ -914,6 +947,8 @@
             };
 
             const onMouseUp = () => {
+                sidebarResizer.classList.remove('resizing');
+                document.body.style.cursor = 'default';
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
             };
