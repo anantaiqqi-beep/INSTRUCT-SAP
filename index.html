@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 11 Multi-Panel System</title>
+    <title>Dashboard System</title>
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             background-color: ButtonFace;
-            margin: 0;
-            padding: 0;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -20,20 +20,76 @@
             user-select: none;
         }
 
+        /* Dashboard UI (Di Body Utama) */
+        .dashboard {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            background: #f3f3f3;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #ffffff;
+            border-right: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 12px;
+            gap: 8px;
+        }
+
+        .sidebar .brand {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            color: #005fb8;
+        }
+
+        .nav-item {
+            padding: 10px 12px;
+            border-radius: 4px;
+            color: #1a1a1a;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .main-content h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .main-content p {
+            color: #555;
+            font-size: 14px;
+        }
+
         /* Floating Panel Style (Windows 11 Fluent) */
         .win11-panel {
             position: absolute;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border-radius: 8px;
             border: 1px solid rgba(0, 0, 0, 0.12);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            min-width: 220px;
-            min-height: 140px;
+            min-width: 320px;
+            min-height: 380px;
             touch-action: none;
         }
 
@@ -62,9 +118,6 @@
             font-size: 12px;
             color: #1a1a1a;
             font-weight: 400;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         /* Control Buttons */
@@ -103,13 +156,63 @@
             height: 10px;
         }
 
-        /* Content Area */
+        /* Content Area & Form Style */
         .panel-content {
             flex: 1;
-            padding: 16px;
+            padding: 24px;
             color: #1c1c1c;
             overflow: auto;
             user-select: text;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #005fb8;
+            background: #ffffff;
+        }
+
+        .btn-submit {
+            margin-top: 10px;
+            padding: 9px;
+            background: #005fb8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-submit:hover {
+            background: #004e9a;
         }
 
         /* Resize Handles (8 Sisi) */
@@ -130,19 +233,34 @@
 </head>
 <body>
 
+    <!-- Home Dashboard (Body Utama) -->
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="brand">App Portal</div>
+            <div class="nav-item active">Dashboard</div>
+            <div class="nav-item">Analytics</div>
+            <div class="nav-item">Inventory</div>
+            <div class="nav-item">Settings</div>
+        </div>
+        <div class="main-content">
+            <h1>Selamat Datang di System Dashboard</h1>
+            <p>Silakan selesaikan proses login pada floating window untuk mengakses seluruh fitur.</p>
+        </div>
+    </div>
+
     <script>
         let highestZIndex = 100;
 
         class Win11Panel {
             constructor(options = {}) {
                 this.title = options.title || 'Panel Window';
-                this.content = options.content || '<p>Konten bawaan...</p>';
-                this.width = options.width || 400;
-                this.height = options.height || 300;
-                this.x = options.x || 50;
-                this.y = options.y || 50;
-                this.minWidth = options.minWidth || 220;
-                this.minHeight = options.minHeight || 140;
+                this.content = options.content || '';
+                this.width = options.width || 380;
+                this.height = options.height || 420;
+                this.x = options.x || 100;
+                this.y = options.y || 80;
+                this.minWidth = options.minWidth || 300;
+                this.minHeight = options.minHeight || 350;
 
                 this.isMaximized = false;
                 this.prevRect = {};
@@ -151,7 +269,6 @@
             }
 
             init() {
-                // 1. Element Creation
                 this.el = document.createElement('div');
                 this.el.className = 'win11-panel';
                 this.el.style.width = `${this.width}px`;
@@ -186,14 +303,12 @@
 
                 document.body.appendChild(this.el);
 
-                // Cache elements
                 this.titleBar = this.el.querySelector('.title-bar');
                 this.btnMaxRestore = this.el.querySelector('.btn-max-restore');
                 this.btnClose = this.el.querySelector('.btn-close');
                 this.iconMax = this.el.querySelector('.icon-max');
                 this.iconRestore = this.el.querySelector('.icon-restore');
 
-                // 2. Attach Events
                 this.el.addEventListener('mousedown', () => this.bringToFront());
                 this.initDrag();
                 this.initResize();
@@ -207,7 +322,6 @@
                 this.el.style.zIndex = highestZIndex;
             }
 
-            // --- DRAG / MOVE LOGIC ---
             initDrag() {
                 let startX, startY, initX, initY;
 
@@ -235,7 +349,6 @@
                 });
             }
 
-            // --- RESPONSIVE 8-DIRECTION RESIZE LOGIC ---
             initResize() {
                 const resizers = this.el.querySelectorAll('.resizer');
 
@@ -255,23 +368,14 @@
                             const dx = moveEvent.clientX - startX;
                             const dy = moveEvent.clientY - startY;
 
-                            // Handle East / Right
                             if (resizer.classList.contains('e') || resizer.classList.contains('ne') || resizer.classList.contains('se')) {
                                 const newWidth = startWidth + dx;
-                                if (newWidth >= this.minWidth) {
-                                    this.el.style.width = `${newWidth}px`;
-                                }
+                                if (newWidth >= this.minWidth) this.el.style.width = `${newWidth}px`;
                             }
-
-                            // Handle South / Bottom
                             if (resizer.classList.contains('s') || resizer.classList.contains('sw') || resizer.classList.contains('se')) {
                                 const newHeight = startHeight + dy;
-                                if (newHeight >= this.minHeight) {
-                                    this.el.style.height = `${newHeight}px`;
-                                }
+                                if (newHeight >= this.minHeight) this.el.style.height = `${newHeight}px`;
                             }
-
-                            // Handle West / Left
                             if (resizer.classList.contains('w') || resizer.classList.contains('nw') || resizer.classList.contains('sw')) {
                                 const newWidth = startWidth - dx;
                                 if (newWidth >= this.minWidth) {
@@ -279,8 +383,6 @@
                                     this.el.style.left = `${startLeft + dx}px`;
                                 }
                             }
-
-                            // Handle North / Top
                             if (resizer.classList.contains('n') || resizer.classList.contains('nw') || resizer.classList.contains('ne')) {
                                 const newHeight = startHeight - dy;
                                 if (newHeight >= this.minHeight) {
@@ -301,7 +403,6 @@
                 });
             }
 
-            // --- MAXIMIZE / RESTORE LOGIC ---
             toggleMaximize() {
                 if (!this.isMaximized) {
                     this.prevRect = {
@@ -328,32 +429,47 @@
                 }
             }
 
-            // --- CLOSE LOGIC ---
             close() {
                 this.el.remove();
             }
         }
 
-        // --- INSTANSIASI PANEL ---
-        
-        // Instance 1
-        const panel1 = new Win11Panel({
-            title: 'File Explorer',
-            content: '<h3>Selamat Datang</h3><p>Ini adalah instance panel pertama.</p>',
-            x: 60,
-            y: 60,
-            width: 420,
-            height: 300
-        });
+        // HTML Template Form Login
+        const loginFormTemplate = `
+            <form class="login-form" onsubmit="event.preventDefault(); alert('Login submitted!');">
+                <div class="form-group">
+                    <label for="client">Client</label>
+                    <input type="text" id="client" placeholder="Masukkan Client Code">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Masukkan Username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="language">Language</label>
+                    <select id="language">
+                        <option value="en">English (EN)</option>
+                        <option value="id">Bahasa Indonesia (ID)</option>
+                        <option value="jp">Japanese (JP)</option>
+                        <option value="cn">Chinese (CN)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+        `;
 
-        // Instance 2
-        const panel2 = new Win11Panel({
-            title: 'Pengaturan System',
-            content: '<p>Ini adalah instance panel kedua yang berjalan secara independen.</p>',
-            x: 200,
-            y: 150,
+        // Inisialisasi Single Panel Login
+        const loginPanel = new Win11Panel({
+            title: 'System Login',
+            content: loginFormTemplate,
+            x: Math.max(20, (window.innerWidth - 380) / 2),
+            y: Math.max(20, (window.innerHeight - 440) / 2),
             width: 380,
-            height: 250
+            height: 440
         });
     </script>
 </body>
