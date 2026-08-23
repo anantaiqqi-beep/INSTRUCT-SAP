@@ -93,17 +93,19 @@
             display: flex;
         }
 
+        /* SAP Sidebar Tree Styling */
         .sidebar {
-            width: 180px;
+            width: 220px;
             background: #ffffff;
             border-right: 1px solid rgba(0, 0, 0, 0.12);
             display: flex;
             flex-direction: column;
-            padding: 10px 8px;
-            gap: 4px;
+            padding: 8px 6px;
+            gap: 2px;
             position: relative;
             flex-shrink: 0;
-            min-width: 50px;
+            min-width: 120px;
+            overflow-y: auto;
         }
 
         .sidebar-resizer {
@@ -117,46 +119,116 @@
         }
 
         .sidebar .brand {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            padding: 4px 6px;
-            margin-bottom: 6px;
+            padding: 6px 8px;
+            margin-bottom: 4px;
             color: #004e9a;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            border-bottom: 1px solid #e5e5e5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .nav-item {
-            padding: 5px 8px;
-            border-radius: 4px;
+        .tree-node {
+            display: flex;
+            align-items: center;
+            padding: 4px 6px;
+            border-radius: 3px;
             color: #1a1a1a;
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            gap: 6px;
+            transition: background 0.1s ease;
         }
 
-        .nav-item:hover, .nav-item.active {
-            background: rgba(0, 0, 0, 0.06);
+        .tree-node:hover {
+            background: rgba(0, 0, 0, 0.05);
         }
 
+        .tree-node.active {
+            background: #e5f1fb;
+            color: #005fb8;
+            font-weight: 600;
+        }
+
+        .tree-arrow {
+            width: 10px;
+            height: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #666;
+            transition: transform 0.15s ease;
+        }
+
+        .tree-arrow.expanded {
+            transform: rotate(90deg);
+        }
+
+        .tree-icon {
+            width: 14px;
+            height: 14px;
+            fill: #555555;
+            flex-shrink: 0;
+        }
+
+        .tree-children {
+            display: none;
+            padding-left: 16px;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tree-children.open {
+            display: flex;
+        }
+
+        /* Content Container & Embedded View Styling */
         .main-content {
             flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .content-placeholder {
             padding: 16px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .main-content h1 {
             font-size: 16px;
-            margin-bottom: 6px;
             font-weight: 600;
+            color: #004e9a;
         }
 
         .main-content p {
             color: #555;
         }
 
+        .embed-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+            background: #ffffff;
+        }
+
+        .embed-iframe.active {
+            display: block;
+        }
+
+        /* Window Panel Styling */
         .win11-panel {
             position: absolute;
             background: rgba(245, 245, 245, 0.92);
@@ -337,22 +409,71 @@
     </div>
 
     <div class="dashboard" id="dashboard">
+        <!-- Sidebar Navigation (SAP Style Tree) -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-resizer" id="sidebarResizer"></div>
-            <div class="brand" id="i18n-brand">App Portal</div>
-            <div class="nav-item active" id="i18n-nav-dashboard">Dashboard</div>
-            <div class="nav-item" id="i18n-nav-analytics">Analisis</div>
-            <div class="nav-item" id="i18n-nav-inventory">Inventaris</div>
-            <div class="nav-item" id="i18n-nav-settings">Pengaturan</div>
+            <div class="brand" id="i18n-brand">SAP Easy Access</div>
+
+            <!-- Dashboard Root Item -->
+            <div class="tree-node active" id="treeNavDashboard">
+                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 1L1 7h2v7h4V10h2v4h4V7h2L8 1z"/></svg>
+                <span id="i18n-nav-dashboard">Dashboard</span>
+            </div>
+
+            <!-- Parent Folder Node: User Management -->
+            <div class="tree-node" id="nodeUserMgmt">
+                <span class="tree-arrow" id="arrowUserMgmt">▶</span>
+                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M3 2v12h10V2H3zm9 11H4V3h8v10zM5 5h6v1H5V5zm0 3h6v1H5V8zm0 3h4v1H5v-1z"/></svg>
+                <span id="i18n-nav-usermgmt">User Managements</span>
+            </div>
+
+            <!-- Sub Tree: User Management Options -->
+            <div class="tree-children" id="childrenUserMgmt">
+                <div class="tree-node" id="itemCreateUser">
+                    <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                    <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm2 1H6a4 4 0 00-4 4v1h12v-1a4 4 0 00-4-4z"/></svg>
+                    <span>Create User (SU01)</span>
+                </div>
+            </div>
+
+            <!-- Additional Nav Tree Nodes -->
+            <div class="tree-node" id="treeNavAnalytics">
+                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 14h14v1H1v-1zm2-3h2v2H3v-2zm4-4h2v6H7V7zm4-5h2v11h-2V2z"/></svg>
+                <span id="i18n-nav-analytics">Analisis</span>
+            </div>
+
+            <div class="tree-node" id="treeNavInventory">
+                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 3h14v10H1V3zm2 2v6h10V5H3z"/></svg>
+                <span id="i18n-nav-inventory">Inventaris</span>
+            </div>
+
+            <div class="tree-node" id="treeNavSettings">
+                <span class="tree-arrow" style="visibility: hidden;">▶</span>
+                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M9.1 1a1.5 1.5 0 0 0-2.2 0l-.7.7a1.5 1.5 0 0 1-1.6.3l-.9-.4a1.5 1.5 0 0 0-2.1.8l-.4.9a1.5 1.5 0 0 1-1.3 1v1a1.5 1.5 0 0 1 1.3 1l.4.9a1.5 1.5 0 0 0 2.1.8l.9-.4a1.5 1.5 0 0 1 1.6.3l.7.7a1.5 1.5 0 0 0 2.2 0l.7-.7a1.5 1.5 0 0 1 1.6-.3l.9.4a1.5 1.5 0 0 0 2.1-.8l.4-.9a1.5 1.5 0 0 1 1.3-1v-1a1.5 1.5 0 0 1-1.3-1l-.4-.9a1.5 1.5 0 0 0-2.1-.8l-.9.4a1.5 1.5 0 0 1-1.6-.3l-.7-.7zM8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+                <span id="i18n-nav-settings">Pengaturan</span>
+            </div>
         </div>
-        <div class="main-content">
-            <h1 id="i18n-dash-title">Sistem Utama</h1>
-            <p id="i18n-dash-desc">Sesi login aktif. Selamat bekerja.</p>
+
+        <!-- Main Display Content Area -->
+        <div class="main-content" id="mainContent">
+            <div class="content-placeholder" id="defaultContent">
+                <h1 id="i18n-dash-title">Sistem Utama</h1>
+                <p id="i18n-dash-desc">Sesi login aktif. Selamat bekerja.</p>
+            </div>
+
+            <!-- Target Iframe Embed -->
+            <iframe id="appIframe" class="embed-iframe" src="about:blank"></iframe>
         </div>
     </div>
 
     <script>
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxEZdn2N3GvXlNTfEvImJX0C84bdnrlQfm-qOk_Ce3UJmi78ftKF6xhKZMgMyUFxwPJIA/exec';
+        
+        // Target Github URL dialihkan ke CDN raw.githack agar dapat dirender utuh sebagai document
+        const CREATE_USER_URL = 'https://raw.githack.com/anantaiqqi-beep/INSTRUCT-SAP/baa2501d63d424d4415e6d74cf553558cf1321fc/SU01.html';
 
         const sapLoader = {
             element: document.getElementById('sapLoading'),
@@ -369,6 +490,7 @@
                 languageLabel: 'Bahasa',
                 signInBtn: 'Masuk',
                 navDashboard: 'Dashboard',
+                navUserMgmt: 'User Managements',
                 navAnalytics: 'Analisis',
                 navInventory: 'Inventaris',
                 navSettings: 'Pengaturan',
@@ -383,6 +505,7 @@
                 languageLabel: 'Language',
                 signInBtn: 'Sign In',
                 navDashboard: 'Dashboard',
+                navUserMgmt: 'User Managements',
                 navAnalytics: 'Analytics',
                 navInventory: 'Inventory',
                 navSettings: 'Settings',
@@ -397,6 +520,7 @@
                 languageLabel: '言語',
                 signInBtn: 'サインイン',
                 navDashboard: 'ダッシュボード',
+                navUserMgmt: 'ユーザー管理',
                 navAnalytics: '分析',
                 navInventory: '在庫',
                 navSettings: '設定',
@@ -697,6 +821,7 @@
                     if (result.success) {
                         const dict = i18nDict[selectedLang] || i18nDict.id;
                         document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
+                        document.getElementById('i18n-nav-usermgmt').innerText = dict.navUserMgmt;
                         document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
                         document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
                         document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
@@ -717,24 +842,73 @@
             }
         });
 
-        document.body.addEventListener('click', (e) => {
-            if (e.target.classList.contains('nav-item')) {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                e.target.classList.add('active');
-                sapLoader.start();
-                setTimeout(() => sapLoader.stop(), 300);
+        // SAP Tree Interactivity Logic
+        const nodeUserMgmt = document.getElementById('nodeUserMgmt');
+        const arrowUserMgmt = document.getElementById('arrowUserMgmt');
+        const childrenUserMgmt = document.getElementById('childrenUserMgmt');
+        const itemCreateUser = document.getElementById('itemCreateUser');
+
+        const defaultContent = document.getElementById('defaultContent');
+        const appIframe = document.getElementById('appIframe');
+
+        // Toggle Folder User Management (Expand / Collapse)
+        nodeUserMgmt.addEventListener('click', () => {
+            const isOpen = childrenUserMgmt.classList.contains('open');
+            if (isOpen) {
+                childrenUserMgmt.classList.remove('open');
+                arrowUserMgmt.classList.remove('expanded');
+            } else {
+                childrenUserMgmt.classList.add('open');
+                arrowUserMgmt.classList.add('expanded');
             }
         });
 
+        // Click Event: Create User (Load Target URL into Iframe)
+        itemCreateUser.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            document.querySelectorAll('.tree-node').forEach(node => node.classList.remove('active'));
+            itemCreateUser.classList.add('active');
+
+            sapLoader.start();
+
+            defaultContent.style.display = 'none';
+            appIframe.src = CREATE_USER_URL;
+            appIframe.classList.add('active');
+
+            appIframe.onload = () => {
+                sapLoader.stop();
+            };
+        });
+
+        // General Navigation Node Switching
+        document.querySelectorAll('.tree-node').forEach(node => {
+            if (node.id !== 'nodeUserMgmt' && node.id !== 'itemCreateUser') {
+                node.addEventListener('click', function() {
+                    document.querySelectorAll('.tree-node').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+
+                    sapLoader.start();
+                    setTimeout(() => {
+                        appIframe.classList.remove('active');
+                        appIframe.src = 'about:blank';
+                        defaultContent.style.display = 'flex';
+                        sapLoader.stop();
+                    }, 200);
+                });
+            }
+        });
+
+        // Drag Resizer Logic for Sidebar
         const sidebar = document.getElementById('sidebar');
         const sidebarResizer = document.getElementById('sidebarResizer');
 
         sidebarResizer.addEventListener('mousedown', (e) => {
             e.preventDefault();
             const onMouseMove = (moveEvent) => {
-                const maxAllowedWidth = window.innerWidth - 50;
+                const maxAllowedWidth = window.innerWidth - 100;
                 let newWidth = moveEvent.clientX;
-                if (newWidth < 50) newWidth = 50;
+                if (newWidth < 120) newWidth = 120;
                 if (newWidth > maxAllowedWidth) newWidth = maxAllowedWidth;
                 sidebar.style.width = `${newWidth}px`;
             };
