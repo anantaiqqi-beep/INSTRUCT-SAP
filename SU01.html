@@ -218,7 +218,7 @@
             sapLoader.start();
             btnSubmit.disabled = true;
 
-            // Mengirimkan action 'register' agar mengeksekusi penambahan user di Kode.gs
+            // Mengirim action 'AddUsername' agar ditangkap blok MODUL 1 di Kode.gs
             const payload = {
                 action: 'addusername',
                 username: username,
@@ -242,15 +242,15 @@
                 btnSubmit.disabled = false;
 
                 if (result.success) {
-                    showStatus(result.message || 'Eksekusi SU01 Berhasil: User ditambahkan.', 'success');
+                    showStatus(result.message || 'User baru berhasil dibuat.', 'success');
                     form.reset();
                 } else {
-                    showStatus(result.message || 'Eksekusi SU01 Gagal.', 'error');
+                    showStatus(result.message || 'Gagal menambahkan user baru.', 'error');
                 }
             } catch (err) {
                 sapLoader.stop();
                 btnSubmit.disabled = false;
-                showStatus('Gagal terhubung ke Apps Script.', 'error');
+                showStatus('Gagal terhubung ke server Apps Script.', 'error');
             }
         });
 
