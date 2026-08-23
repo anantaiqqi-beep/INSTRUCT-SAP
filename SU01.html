@@ -164,22 +164,22 @@
     </div>
 
     <h1>Pembuatan User Baru</h1>
-    <p class="subtitle">Isi data akun bebas di bawah ini untuk ditambahkan ke sheet USER_DATA.</p>
+    <p class="subtitle">Isi data akun di bawah ini untuk ditambahkan ke sheet USER_DATA.</p>
 
     <form id="createUserForm">
         <div class="form-group">
             <label for="username">Nama Pengguna (Username)</label>
-            <input type="text" id="username" placeholder="Masukkan Username Bebas" required autocomplete="off">
+            <input type="text" id="username" placeholder="Masukkan Username" required autocomplete="off">
         </div>
 
         <div class="form-group">
             <label for="password">Kata Sandi (Password)</label>
-            <input type="password" id="password" placeholder="Masukkan Password Bebas" required>
+            <input type="password" id="password" placeholder="Masukkan Password" required>
         </div>
 
         <div class="form-group">
             <label for="client">ID Klien (Client)</label>
-            <input type="text" id="client" placeholder="Masukkan ID Client Bebas" required autocomplete="off">
+            <input type="text" id="client" placeholder="Masukkan ID Client" required autocomplete="off">
         </div>
 
         <button type="submit" class="btn-soft" id="btnCreateUser">Buat User</button>
@@ -218,7 +218,7 @@
             sapLoader.start();
             btnCreateUser.disabled = true;
 
-            // Mengirim action secara eksplisit 'createUser'
+            // Parameter payload yang selaras dengan handleCreateUser pada Kode.gs
             const payload = {
                 action: 'createUser',
                 username: username,
@@ -231,26 +231,35 @@
                     method: 'POST',
                     mode: 'cors',
                     redirect: 'follow',
+                    cache: 'no-cache',
                     headers: { 
                         'Content-Type': 'text/plain;charset=utf-8' 
                     },
                     body: JSON.stringify(payload)
                 });
 
-                const result = await response.json();
+                const textResult = await response.text();
+                let result;
+                
+                try {
+                    result = JSON.parse(textResult);
+                } catch (e) {
+                    throw new Error('Respons dari server bukan format JSON valid.');
+                }
+
                 sapLoader.stop();
                 btnCreateUser.disabled = false;
 
                 if (result.success) {
-                    showStatus(result.message || 'User berhasil ditambahkan ke database.', 'success');
+                    showStatus(result.message || 'User baru berhasil ditambahkan.', 'success');
                     form.reset();
                 } else {
-                    showStatus(result.message || 'Gagal menambahkan user.', 'error');
+                    showStatus(result.message || 'Gagal membuat user baru.', 'error');
                 }
             } catch (err) {
                 sapLoader.stop();
                 btnCreateUser.disabled = false;
-                showStatus('Terjadi kesalahan koneksi atau server.', 'error');
+                showStatus('Terjadi kesalahan koneksi atau kesalahan server.', 'error');
             }
         });
 
