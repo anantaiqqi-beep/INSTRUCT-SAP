@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard System</title>
+    <title>Compact Dashboard System</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-size: 11px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -20,76 +22,121 @@
             user-select: none;
         }
 
-        /* Dashboard UI (Di Body Utama) */
+        /* Silver Vertical Gradient Button Style */
+        .btn-silver {
+            background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 50%, #e1e1e1 51%, #d6d6d6 100%);
+            border: 1px solid #adadad;
+            border-radius: 4px;
+            color: #222;
+            padding: 4px 10px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.1s ease;
+        }
+
+        .btn-silver:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #ebebeb 50%, #d8d8d8 51%, #cccccc 100%);
+            border-color: #8e8e8e;
+        }
+
+        .btn-silver:active {
+            background: linear-gradient(to bottom, #d6d6d6 0%, #e1e1e1 50%, #f0f0f0 51%, #ffffff 100%);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Dashboard Area (Hidden by default) */
         .dashboard {
-            display: flex;
+            display: none;
             height: 100vh;
             width: 100vw;
             background: #f3f3f3;
+            position: relative;
+        }
+
+        .dashboard.active {
+            display: flex;
         }
 
         .sidebar {
-            width: 240px;
+            width: 180px;
             background: #ffffff;
-            border-right: 1px solid rgba(0, 0, 0, 0.08);
+            border-right: 1px solid rgba(0, 0, 0, 0.12);
             display: flex;
             flex-direction: column;
-            padding: 20px 12px;
-            gap: 8px;
+            padding: 10px 8px;
+            gap: 4px;
+            position: relative;
+            flex-shrink: 0;
+            min-width: 50px;
+        }
+
+        /* Resizer Sidebar Right Edge */
+        .sidebar-resizer {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            width: 6px;
+            height: 100%;
+            cursor: ew-resize;
+            z-index: 20;
         }
 
         .sidebar .brand {
-            font-size: 16px;
-            font-weight: 600;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            color: #005fb8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 6px;
+            margin-bottom: 6px;
+            color: #004e9a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .nav-item {
-            padding: 10px 12px;
-            border-radius: 4px;
+            padding: 5px 8px;
+            border-radius: 3px;
             color: #1a1a1a;
-            font-size: 14px;
             cursor: pointer;
-            transition: background 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .nav-item:hover, .nav-item.active {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.06);
         }
 
         .main-content {
             flex: 1;
-            padding: 32px;
+            padding: 16px;
             overflow-y: auto;
         }
 
         .main-content h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .main-content p {
             color: #555;
-            font-size: 14px;
         }
 
-        /* Floating Panel Style (Windows 11 Fluent) */
+        /* Floating Panel Window */
         .win11-panel {
             position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.12);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+            background: rgba(245, 245, 245, 0.88);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            min-width: 320px;
-            min-height: 380px;
+            min-width: 200px;
+            min-height: 28px;
             touch-action: none;
         }
 
@@ -102,64 +149,66 @@
             border: none !important;
         }
 
-        /* Title Bar */
+        .win11-panel.collapsed {
+            height: 28px !important;
+            min-height: 28px !important;
+        }
+
+        .win11-panel.collapsed .panel-content,
+        .win11-panel.collapsed .resizer {
+            display: none !important;
+        }
+
+        /* Title Bar (Darker Background) */
         .title-bar {
-            height: 36px;
+            height: 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-left: 12px;
-            background: transparent;
+            padding-left: 8px;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             cursor: default;
             flex-shrink: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
         }
 
         .title-bar .title {
-            font-size: 12px;
-            color: #1a1a1a;
-            font-weight: 400;
+            font-size: 11px;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         /* Control Buttons */
         .controls {
             display: flex;
             height: 100%;
+            align-items: center;
+            gap: 2px;
+            padding-right: 2px;
         }
 
-        .btn {
-            width: 46px;
-            height: 100%;
+        .btn-ctrl {
+            width: 22px;
+            height: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: transparent;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            transition: background-color 0.15s;
-        }
-
-        .btn:hover {
-            background-color: rgba(0, 0, 0, 0.06);
+            font-size: 9px;
+            line-height: 1;
+            padding: 0;
         }
 
         .btn-close:hover {
-            background-color: #c42b1c !important;
+            background: linear-gradient(to bottom, #ff6b6b 0%, #c42b1c 100%) !important;
+            border-color: #ab2316 !important;
+            color: #ffffff !important;
         }
 
-        .btn-close:hover svg path {
-            fill: #ffffff;
-        }
-
-        .btn svg {
-            width: 10px;
-            height: 10px;
-        }
-
-        /* Content Area & Form Style */
+        /* Content Area */
         .panel-content {
             flex: 1;
-            padding: 24px;
+            padding: 12px;
             color: #1c1c1c;
             overflow: auto;
             user-select: text;
@@ -168,29 +217,27 @@
         .login-form {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 8px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         .form-group label {
-            font-size: 12px;
+            font-size: 10px;
             color: #333;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .form-group input, .form-group select {
-            padding: 8px 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            background: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
+            padding: 4px 6px;
+            border-radius: 3px;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.9);
             outline: none;
-            transition: border-color 0.15s, background-color 0.15s;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -199,43 +246,29 @@
         }
 
         .btn-submit {
-            margin-top: 10px;
-            padding: 9px;
-            background: #005fb8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .btn-submit:hover {
-            background: #004e9a;
+            margin-top: 6px;
+            padding: 5px;
+            font-weight: 600;
         }
 
         /* Resize Handles (8 Sisi) */
-        .resizer {
-            position: absolute;
-            z-index: 10;
-        }
-
-        .resizer.n  { top: 0; left: 8px; right: 8px; height: 5px; cursor: ns-resize; }
-        .resizer.s  { bottom: 0; left: 8px; right: 8px; height: 5px; cursor: ns-resize; }
-        .resizer.e  { right: 0; top: 8px; bottom: 8px; width: 5px; cursor: ew-resize; }
-        .resizer.w  { left: 0; top: 8px; bottom: 8px; width: 5px; cursor: ew-resize; }
-        .resizer.nw { top: 0; left: 0; width: 8px; height: 8px; cursor: nwse-resize; }
-        .resizer.ne { top: 0; right: 0; width: 8px; height: 8px; cursor: nesw-resize; }
-        .resizer.sw { bottom: 0; left: 0; width: 8px; height: 8px; cursor: nesw-resize; }
-        .resizer.se { bottom: 0; right: 0; width: 8px; height: 8px; cursor: nwse-resize; }
+        .resizer { position: absolute; z-index: 10; }
+        .resizer.n  { top: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
+        .resizer.s  { bottom: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
+        .resizer.e  { right: 0; top: 6px; bottom: 6px; width: 4px; cursor: ew-resize; }
+        .resizer.w  { left: 0; top: 6px; bottom: 6px; width: 4px; cursor: ew-resize; }
+        .resizer.nw { top: 0; left: 0; width: 6px; height: 6px; cursor: nwse-resize; }
+        .resizer.ne { top: 0; right: 0; width: 6px; height: 6px; cursor: nesw-resize; }
+        .resizer.sw { bottom: 0; left: 0; width: 6px; height: 6px; cursor: nesw-resize; }
+        .resizer.se { bottom: 0; right: 0; width: 6px; height: 6px; cursor: nwse-resize; }
     </style>
 </head>
 <body>
 
-    <!-- Home Dashboard (Body Utama) -->
-    <div class="dashboard">
-        <div class="sidebar">
+    <!-- Dashboard Main View (Sembunyi saat Session Login) -->
+    <div class="dashboard" id="dashboard">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-resizer" id="sidebarResizer"></div>
             <div class="brand">App Portal</div>
             <div class="nav-item active">Dashboard</div>
             <div class="nav-item">Analytics</div>
@@ -243,8 +276,8 @@
             <div class="nav-item">Settings</div>
         </div>
         <div class="main-content">
-            <h1>Selamat Datang di System Dashboard</h1>
-            <p>Silakan selesaikan proses login pada floating window untuk mengakses seluruh fitur.</p>
+            <h1>Sistem Utama</h1>
+            <p>Sesi login aktif. Selamat bekerja.</p>
         </div>
     </div>
 
@@ -255,14 +288,15 @@
             constructor(options = {}) {
                 this.title = options.title || 'Panel Window';
                 this.content = options.content || '';
-                this.width = options.width || 380;
-                this.height = options.height || 420;
-                this.x = options.x || 100;
-                this.y = options.y || 80;
-                this.minWidth = options.minWidth || 300;
-                this.minHeight = options.minHeight || 350;
+                this.width = options.width || 280;
+                this.height = options.height || 260;
+                this.x = options.x || 80;
+                this.y = options.y || 60;
+                this.minWidth = options.minWidth || 200;
+                this.minHeight = options.minHeight || 180;
 
                 this.isMaximized = false;
+                this.isCollapsed = false;
                 this.prevRect = {};
 
                 this.init();
@@ -281,13 +315,9 @@
                     <div class="title-bar">
                         <span class="title">${this.title}</span>
                         <div class="controls">
-                            <button class="btn btn-max-restore" title="Maximize">
-                                <svg class="icon-max" viewBox="0 0 10 10"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z" fill="#000"/></svg>
-                                <svg class="icon-restore" viewBox="0 0 10 10" style="display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z" fill="#000"/></svg>
-                            </button>
-                            <button class="btn btn-close" title="Close">
-                                <svg viewBox="0 0 10 10"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z" fill="#000"/></svg>
-                            </button>
+                            <button class="btn-silver btn-ctrl btn-collapse" title="Collapse/Expand">&#8722;</button>
+                            <button class="btn-silver btn-ctrl btn-max-restore" title="Maximize">&#9633;</button>
+                            <button class="btn-silver btn-ctrl btn-close" title="Close">&#10005;</button>
                         </div>
                     </div>
                     <div class="panel-content">${this.content}</div>
@@ -304,15 +334,15 @@
                 document.body.appendChild(this.el);
 
                 this.titleBar = this.el.querySelector('.title-bar');
+                this.btnCollapse = this.el.querySelector('.btn-collapse');
                 this.btnMaxRestore = this.el.querySelector('.btn-max-restore');
                 this.btnClose = this.el.querySelector('.btn-close');
-                this.iconMax = this.el.querySelector('.icon-max');
-                this.iconRestore = this.el.querySelector('.icon-restore');
 
                 this.el.addEventListener('mousedown', () => this.bringToFront());
                 this.initDrag();
                 this.initResize();
 
+                this.btnCollapse.addEventListener('click', () => this.toggleCollapse());
                 this.btnMaxRestore.addEventListener('click', () => this.toggleMaximize());
                 this.btnClose.addEventListener('click', () => this.close());
             }
@@ -354,7 +384,7 @@
 
                 resizers.forEach(resizer => {
                     resizer.addEventListener('mousedown', (e) => {
-                        if (this.isMaximized) return;
+                        if (this.isMaximized || this.isCollapsed) return;
                         e.preventDefault();
 
                         const startX = e.clientX;
@@ -403,7 +433,22 @@
                 });
             }
 
+            toggleCollapse() {
+                if (!this.isCollapsed) {
+                    this.savedHeight = this.el.style.height;
+                    this.el.classList.add('collapsed');
+                    this.btnCollapse.innerHTML = '&#43;';
+                    this.isCollapsed = true;
+                } else {
+                    this.el.classList.remove('collapsed');
+                    this.el.style.height = this.savedHeight;
+                    this.btnCollapse.innerHTML = '&#8722;';
+                    this.isCollapsed = false;
+                }
+            }
+
             toggleMaximize() {
+                if (this.isCollapsed) return;
                 if (!this.isMaximized) {
                     this.prevRect = {
                         top: this.el.offsetTop,
@@ -412,9 +457,7 @@
                         height: this.el.offsetHeight
                     };
                     this.el.classList.add('maximized');
-                    this.iconMax.style.display = 'none';
-                    this.iconRestore.style.display = 'block';
-                    this.btnMaxRestore.title = "Restore";
+                    this.btnMaxRestore.innerHTML = '&#10064;';
                     this.isMaximized = true;
                 } else {
                     this.el.classList.remove('maximized');
@@ -422,9 +465,7 @@
                     this.el.style.left = `${this.prevRect.left}px`;
                     this.el.style.width = `${this.prevRect.width}px`;
                     this.el.style.height = `${this.prevRect.height}px`;
-                    this.iconMax.style.display = 'block';
-                    this.iconRestore.style.display = 'none';
-                    this.btnMaxRestore.title = "Maximize";
+                    this.btnMaxRestore.innerHTML = '&#9633;';
                     this.isMaximized = false;
                 }
             }
@@ -434,20 +475,20 @@
             }
         }
 
-        // HTML Template Form Login
+        // Template Form Login (Tanpa Placeholder)
         const loginFormTemplate = `
-            <form class="login-form" onsubmit="event.preventDefault(); alert('Login submitted!');">
+            <form class="login-form" id="loginForm">
                 <div class="form-group">
                     <label for="client">Client</label>
-                    <input type="text" id="client" placeholder="Masukkan Client Code">
+                    <input type="text" id="client" required>
                 </div>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Masukkan Username">
+                    <input type="text" id="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••••">
+                    <input type="password" id="password" required>
                 </div>
                 <div class="form-group">
                     <label for="language">Language</label>
@@ -455,21 +496,52 @@
                         <option value="en">English (EN)</option>
                         <option value="id">Bahasa Indonesia (ID)</option>
                         <option value="jp">Japanese (JP)</option>
-                        <option value="cn">Chinese (CN)</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-submit">Sign In</button>
+                <button type="submit" class="btn-silver btn-submit">Sign In</button>
             </form>
         `;
 
-        // Inisialisasi Single Panel Login
+        // Instance Panel Login
         const loginPanel = new Win11Panel({
             title: 'System Login',
             content: loginFormTemplate,
-            x: Math.max(20, (window.innerWidth - 380) / 2),
-            y: Math.max(20, (window.innerHeight - 440) / 2),
-            width: 380,
-            height: 440
+            x: Math.max(10, (window.innerWidth - 260) / 2),
+            y: Math.max(10, (window.innerHeight - 260) / 2),
+            width: 260,
+            height: 260
+        });
+
+        // Submit Logic (Proses Login -> Tampilkan Dashboard)
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            loginPanel.close();
+            document.getElementById('dashboard').classList.add('active');
+        });
+
+        // Sidebar Resizer Logic (Min 50px, Max Window Width - 50px)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarResizer = document.getElementById('sidebarResizer');
+
+        sidebarResizer.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const onMouseMove = (moveEvent) => {
+                const maxAllowedWidth = window.innerWidth - 50;
+                let newWidth = moveEvent.clientX;
+
+                if (newWidth < 50) newWidth = 50;
+                if (newWidth > maxAllowedWidth) newWidth = maxAllowedWidth;
+
+                sidebar.style.width = `${newWidth}px`;
+            };
+
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
         });
     </script>
 </body>
