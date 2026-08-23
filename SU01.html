@@ -1,1 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembuatan User</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            -webkit-tap-highlight-color: transparent;
+        }
 
+        body {
+            background-color: ButtonFace;
+            min-height: 100vh;
+            width: 100vw;
+            padding: 20px;
+            font-family: 'Segoe UI Variable Text', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1c1c1c;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            user-select: none;
+        }
+
+        /* SAP Signature Top Progress Bar */
+        .sap-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.2);
+            z-index: 99999;
+            display: none;
+            overflow: hidden;
+        }
+
+        .sap-progress-container.active {
+            display: block;
+        }
+
+        .sap-progress-bar {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, #f0ab00, #fbbf24, #f0ab00);
+            box-shadow: 0 0 8px rgba(240, 171, 0, 0.8);
+            position: absolute;
+            animation: sapIndeterminate 1.2s infinite ease-in-out;
+        }
+
+        @keyframes sapIndeterminate {
+            0% { left: -40%; width: 30%; }
+            50% { width: 50%; }
+            100% { left: 100%; width: 30%; }
+        }
+
+        /* Direct Layout Elements */
+        h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #004e9a;
+            margin-bottom: 4px;
+        }
+
+        p.subtitle {
+            color: #555555;
+            margin-bottom: 8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-width: 320px;
+        }
+
+        .form-group label {
+            font-size: 10px;
+            color: #333333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input:focus {
+            border-color: #005fb8;
+            background: #ffffff;
+        }
+
+        /* Soft Gradient Button */
+        .btn-soft {
+            background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 6px;
+            color: #242424;
+            padding: 5px 16px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+            font-weight: 600;
+            width: fit-content;
+            margin-top: 4px;
+        }
+
+        .btn-soft:hover {
+            background: linear-gradient(180deg, #fbfbfb 0%, #e8eaed 100%);
+            border-color: rgba(0, 0, 0, 0.22);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-soft:active {
+            background: linear-gradient(180deg, #e4e6e9 0%, #eeeff2 100%);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-message {
+            font-size: 11px;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .status-message.error {
+            color: #c42b1c;
+        }
+
+        .status-message.success {
+            color: #0e700e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sap-progress-container" id="sapLoading">
+        <div class="sap-progress-bar"></div>
+    </div>
+
+    <h1>Pembuatan User Baru</h1>
+    <p class="subtitle">Isi data akun di bawah ini untuk ditambahkan ke database Spreadsheet.</p>
+
+    <div class="form-group">
+        <label for="client">Klien</label>
+        <input type="text" id="client" placeholder="Masukkan ID Client">
+    </div>
+
+    <div class="form-group">
+        <label for="username">Nama Pengguna</label>
+        <input type="text" id="username" placeholder="Masukkan Username">
+    </div>
+
+    <div class="form-group">
+        <label for="password">Kata Sandi</label>
+        <input type="password" id="password" placeholder="Masukkan Password">
+    </div>
+
+    <button type="button" class="btn-soft" id="btnCreateUser">Buat User</button>
+
+    <div class="status-message" id="statusMsg"></div>
+
+    <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQXs2xyQr7tM_qJShJpDN_jFhcwQV5C5lEBN1lRJOO04D6fLCQjshO7pAHdccd7Lnprw/exec';
+
+        const sapLoader = {
+            element: document.getElementById('sapLoading'),
+            start() { this.element.classList.add('active'); },
+            stop() { this.element.classList.remove('active'); }
+        };
+
+        const btnCreateUser = document.getElementById('btnCreateUser');
+        const statusMsg = document.getElementById('statusMsg');
+
+        btnCreateUser.addEventListener('click', async () => {
+            const client = document.getElementById('client').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            statusMsg.style.display = 'none';
+            statusMsg.className = 'status-message';
+
+            if (!client || !username || !password) {
+                statusMsg.innerText = 'Semua bidang input wajib diisi.';
+                statusMsg.classList.add('error');
+                statusMsg.style.display = 'block';
+                return;
+            }
+
+            sapLoader.start();
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'register',
+                        client: client,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                sapLoader.stop();
+
+                if (result.success) {
+                    statusMsg.innerText = result.message || 'User berhasil dibuat.';
+                    statusMsg.classList.add('success');
+                    statusMsg.style.display = 'block';
+
+                    document.getElementById('client').value = '';
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                } else {
+                    statusMsg.innerText = result.message || 'Gagal membuat user.';
+                    statusMsg.classList.add('error');
+                    statusMsg.style.display = 'block';
+                }
+            } catch (err) {
+                sapLoader.stop();
+                statusMsg.innerText = 'Terjadi kesalahan koneksi server.';
+                statusMsg.classList.add('error');
+                statusMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
