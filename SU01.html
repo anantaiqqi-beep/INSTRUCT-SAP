@@ -218,9 +218,9 @@
             sapLoader.start();
             btnSubmit.disabled = true;
 
-            // Mengirimkan action 'su01' agar dikenali oleh Router di Apps Script
+            // Mengirimkan action 'register' agar mengeksekusi penambahan user di Kode.gs
             const payload = {
-                action: 'AddUsername',
+                action: 'register',
                 username: username,
                 password: password,
                 client: client
