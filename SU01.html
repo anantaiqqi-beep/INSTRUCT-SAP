@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembuatan User</title>
+    <title>Pembuatan User USER_DATA</title>
     <style>
         * {
             box-sizing: border-box;
@@ -58,7 +58,6 @@
             100% { left: 100%; width: 30%; }
         }
 
-        /* Direct Layout Elements */
         h1 {
             font-size: 14px;
             font-weight: 600;
@@ -71,11 +70,17 @@
             margin-bottom: 8px;
         }
 
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 320px;
+        }
+
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 3px;
-            max-width: 320px;
         }
 
         .form-group label {
@@ -127,18 +132,30 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
+        .btn-soft:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .status-message {
             font-size: 11px;
             display: none;
             margin-top: 4px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            max-width: 320px;
         }
 
         .status-message.error {
             color: #c42b1c;
+            background-color: #fde8e8;
+            border: 1px solid rgba(196, 43, 28, 0.2);
         }
 
         .status-message.success {
             color: #0e700e;
+            background-color: #e8f5e9;
+            border: 1px solid rgba(14, 112, 14, 0.2);
         }
     </style>
 </head>
@@ -148,25 +165,30 @@
         <div class="sap-progress-bar"></div>
     </div>
 
-    <h1>Pembuatan User Baru</h1>
-    <p class="subtitle">Isi data akun di bawah ini untuk ditambahkan ke database Spreadsheet.</p>
+    <h1>Pembuatan User Baru (USER_DATA)</h1>
+    <p class="subtitle">Entri akun akan dicatat sesuai urutan kolom Spreadsheet (No, Username, Password, Client).</p>
 
-    <div class="form-group">
-        <label for="client">Klien</label>
-        <input type="text" id="client" placeholder="Masukkan ID Client">
-    </div>
+    <form id="createUserForm">
+        <!-- Input Username (Kolom B) -->
+        <div class="form-group">
+            <label for="username">Nama Pengguna (Username)</label>
+            <input type="text" id="username" placeholder="Masukkan Username" required autocomplete="off">
+        </div>
 
-    <div class="form-group">
-        <label for="username">Nama Pengguna</label>
-        <input type="text" id="username" placeholder="Masukkan Username">
-    </div>
+        <!-- Input Password (Kolom C) -->
+        <div class="form-group">
+            <label for="password">Kata Sandi (Password)</label>
+            <input type="password" id="password" placeholder="Masukkan Password" required>
+        </div>
 
-    <div class="form-group">
-        <label for="password">Kata Sandi</label>
-        <input type="password" id="password" placeholder="Masukkan Password">
-    </div>
+        <!-- Input Client (Kolom D) -->
+        <div class="form-group">
+            <label for="client">ID Klien (Client)</label>
+            <input type="text" id="client" placeholder="Masukkan ID Client" required autocomplete="off">
+        </div>
 
-    <button type="button" class="btn-soft" id="btnCreateUser">Buat User</button>
+        <button type="submit" class="btn-soft" id="btnCreateUser">Buat User</button>
+    </form>
 
     <div class="status-message" id="statusMsg"></div>
 
@@ -179,62 +201,70 @@
             stop() { this.element.classList.remove('active'); }
         };
 
+        const form = document.getElementById('createUserForm');
         const btnCreateUser = document.getElementById('btnCreateUser');
         const statusMsg = document.getElementById('statusMsg');
 
-        btnCreateUser.addEventListener('click', async () => {
-            const client = document.getElementById('client').value.trim();
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+            const client = document.getElementById('client').value.trim();
 
             statusMsg.style.display = 'none';
             statusMsg.className = 'status-message';
 
-            if (!client || !username || !password) {
-                statusMsg.innerText = 'Semua bidang input wajib diisi.';
-                statusMsg.classList.add('error');
-                statusMsg.style.display = 'block';
+            if (!username || !password || !client) {
+                showStatus('Semua bidang input wajib diisi.', 'error');
                 return;
             }
 
             sapLoader.start();
+            btnCreateUser.disabled = true;
+
+            // Payload disesuaikan dengan kebutuhan pemetaan sheet USER_DATA
+            const payload = {
+                action: 'createUser',
+                sheetName: 'USER_DATA',
+                username: username,  // Kolom B
+                password: password,  // Kolom C
+                client: client       // Kolom D
+            };
 
             try {
                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'register',
-                        client: client,
-                        username: username,
-                        password: password
-                    })
+                    redirect: 'follow',
+                    headers: { 
+                        'Content-Type': 'text/plain;charset=utf-8' 
+                    },
+                    body: JSON.stringify(payload)
                 });
 
                 const result = await response.json();
                 sapLoader.stop();
+                btnCreateUser.disabled = false;
 
-                if (result.success) {
-                    statusMsg.innerText = result.message || 'User berhasil dibuat.';
-                    statusMsg.classList.add('success');
-                    statusMsg.style.display = 'block';
-
-                    document.getElementById('client').value = '';
-                    document.getElementById('username').value = '';
-                    document.getElementById('password').value = '';
+                if (result.success || result.status === 'success') {
+                    showStatus(result.message || 'User berhasil ditambahkan ke sheet USER_DATA.', 'success');
+                    form.reset();
                 } else {
-                    statusMsg.innerText = result.message || 'Gagal membuat user.';
-                    statusMsg.classList.add('error');
-                    statusMsg.style.display = 'block';
+                    showStatus(result.message || 'Gagal menambahkan user.', 'error');
                 }
             } catch (err) {
                 sapLoader.stop();
-                statusMsg.innerText = 'Terjadi kesalahan koneksi server.';
-                statusMsg.classList.add('error');
-                statusMsg.style.display = 'block';
+                btnCreateUser.disabled = false;
+                showStatus('Terjadi kesalahan sistem atau kendala koneksi.', 'error');
             }
         });
+
+        function showStatus(message, type) {
+            statusMsg.innerText = message;
+            statusMsg.classList.add(type);
+            statusMsg.style.display = 'block';
+        }
     </script>
 </body>
 </html>
