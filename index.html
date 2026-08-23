@@ -22,6 +22,38 @@
             user-select: none;
         }
 
+        /* SAP Signature Style Top Loading Progress Bar */
+        .sap-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.2);
+            z-index: 99999;
+            display: none;
+            overflow: hidden;
+        }
+
+        .sap-progress-container.active {
+            display: block;
+        }
+
+        .sap-progress-bar {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, #f0ab00, #fbbf24, #f0ab00);
+            box-shadow: 0 0 8px rgba(240, 171, 0, 0.8);
+            position: absolute;
+            animation: sapIndeterminate 1.2s infinite ease-in-out;
+        }
+
+        @keyframes sapIndeterminate {
+            0% { left: -40%; width: 30%; }
+            50% { width: 50%; }
+            100% { left: 100%; width: 30%; }
+        }
+
         /* Soft Vertical Gradient Rounded Button Style */
         .btn-soft {
             background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
@@ -49,7 +81,7 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Dashboard Area (Hidden by default) */
+        /* Dashboard Area */
         .dashboard {
             display: none;
             height: 100vh;
@@ -139,7 +171,7 @@
             flex-direction: column;
             overflow: hidden;
             min-width: 200px;
-            min-height: 32px;
+            min-height: 28px;
             touch-action: none;
         }
 
@@ -153,8 +185,8 @@
         }
 
         .win11-panel.collapsed {
-            height: 32px !important;
-            min-height: 32px !important;
+            height: 28px !important;
+            min-height: 28px !important;
         }
 
         .win11-panel.collapsed .panel-body,
@@ -165,7 +197,7 @@
 
         /* Title Bar */
         .title-bar {
-            height: 32px;
+            height: 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -183,14 +215,14 @@
             font-weight: 500;
         }
 
-        /* Control Buttons (Matching Win11 Style Color Scheme) */
+        /* Control Buttons (Win11 Compact Style) */
         .controls {
             display: flex;
             height: 100%;
         }
 
         .btn-win11 {
-            width: 36px;
+            width: 28px;
             height: 100%;
             display: flex;
             justify-content: center;
@@ -300,6 +332,11 @@
 </head>
 <body>
 
+    <!-- Top Loading Bar (SAP Signature Theme) -->
+    <div class="sap-progress-container" id="sapLoading">
+        <div class="sap-progress-bar"></div>
+    </div>
+
     <!-- Dashboard Main View -->
     <div class="dashboard" id="dashboard">
         <div class="sidebar" id="sidebar">
@@ -317,6 +354,17 @@
     </div>
 
     <script>
+        // Controller Loading Progress Real-time SAP
+        const sapLoader = {
+            element: document.getElementById('sapLoading'),
+            start() {
+                this.element.classList.add('active');
+            },
+            stop() {
+                this.element.classList.remove('active');
+            }
+        };
+
         // Kamus Bahasa Multibahasa (i18n)
         const i18nDict = {
             id: {
@@ -398,14 +446,14 @@
                         <span class="title" id="panelTitleEl">${this.title}</span>
                         <div class="controls">
                             <button class="btn-win11 btn-collapse" title="Minimize/Expand">
-                                <svg viewBox="0 0 10 10"><rect x="0" y="4.5" width="10" height="1.2"/></svg>
+                                <svg viewBox="0 0 10 10" style="width:8px;height:8px;"><rect x="0" y="4.5" width="10" height="1.2"/></svg>
                             </button>
                             <button class="btn-win11 btn-max-restore" title="Maximize">
-                                <svg class="icon-max" viewBox="0 0 10 10"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z"/></svg>
-                                <svg class="icon-restore" viewBox="0 0 10 10" style="display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z"/></svg>
+                                <svg class="icon-max" viewBox="0 0 10 10" style="width:8px;height:8px;"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z"/></svg>
+                                <svg class="icon-restore" viewBox="0 0 10 10" style="width:8px;height:8px;display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z"/></svg>
                             </button>
                             <button class="btn-win11 btn-close" title="Close">
-                                <svg viewBox="0 0 10 10"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z"/></svg>
+                                <svg viewBox="0 0 10 10" style="width:8px;height:8px;"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z"/></svg>
                             </button>
                         </div>
                     </div>
@@ -613,41 +661,66 @@
             height: 280
         });
 
-        // Real-time Update Bahasa pada Form Login saat Pilihan Bahasa Berubah
+        // Real-time Update Bahasa dengan Simulasi Loading SAP
         document.body.addEventListener('change', (e) => {
             if (e.target.id === 'language') {
-                const lang = e.target.value;
-                const dict = i18nDict[lang] || i18nDict.id;
-                document.getElementById('panelTitleEl').innerText = dict.panelTitle;
-                document.getElementById('lbl-client').innerText = dict.clientLabel;
-                document.getElementById('lbl-username').innerText = dict.usernameLabel;
-                document.getElementById('lbl-password').innerText = dict.passwordLabel;
-                document.getElementById('lbl-language').innerText = dict.languageLabel;
-                document.getElementById('btn-submit-text').innerText = dict.signInBtn;
+                sapLoader.start();
+                
+                setTimeout(() => {
+                    const lang = e.target.value;
+                    const dict = i18nDict[lang] || i18nDict.id;
+                    document.getElementById('panelTitleEl').innerText = dict.panelTitle;
+                    document.getElementById('lbl-client').innerText = dict.clientLabel;
+                    document.getElementById('lbl-username').innerText = dict.usernameLabel;
+                    document.getElementById('lbl-password').innerText = dict.passwordLabel;
+                    document.getElementById('lbl-language').innerText = dict.languageLabel;
+                    document.getElementById('btn-submit-text').innerText = dict.signInBtn;
+                    
+                    sapLoader.stop();
+                }, 300);
             }
         });
 
-        // Submit Logic (Proses Login -> Update Bahasa Dashboard -> Tampilkan)
+        // Submit Logic (Real-time Loading Progress saat Autentikasi Login)
         document.body.addEventListener('submit', (e) => {
             if (e.target.id === 'loginForm') {
                 e.preventDefault();
-                const selectedLang = document.getElementById('language').value;
-                const dict = i18nDict[selectedLang] || i18nDict.id;
+                sapLoader.start();
 
-                // Terapkan Bahasa ke Seluruh UI Dashboard
-                document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
-                document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
-                document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
-                document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
-                document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
-                document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
+                setTimeout(() => {
+                    const selectedLang = document.getElementById('language').value;
+                    const dict = i18nDict[selectedLang] || i18nDict.id;
 
-                loginPanel.close();
-                document.getElementById('dashboard').classList.add('active');
+                    // Terapkan Bahasa ke Seluruh UI Dashboard
+                    document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
+                    document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
+                    document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
+                    document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
+                    document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
+                    document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
+
+                    loginPanel.close();
+                    document.getElementById('dashboard').classList.add('active');
+                    
+                    sapLoader.stop();
+                }, 800);
             }
         });
 
-        // Sidebar Resizer Logic (Min 50px, Max Window Width - 50px)
+        // Event Interaksi Navigasi dengan Loading Bar Real-time
+        document.body.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nav-item')) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+
+                sapLoader.start();
+                setTimeout(() => {
+                    sapLoader.stop();
+                }, 400);
+            }
+        });
+
+        // Sidebar Resizer Logic
         const sidebar = document.getElementById('sidebar');
         const sidebarResizer = document.getElementById('sidebarResizer');
 
