@@ -22,7 +22,7 @@
             user-select: none;
         }
 
-        /* SAP Signature Style Top Loading Progress Bar */
+        /* SAP Signature Top Progress Bar */
         .sap-progress-container {
             position: fixed;
             top: 0;
@@ -54,7 +54,7 @@
             100% { left: 100%; width: 30%; }
         }
 
-        /* Soft Vertical Gradient Rounded Button Style */
+        /* Soft Gradient Button */
         .btn-soft {
             background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
             border: 1px solid rgba(0, 0, 0, 0.15);
@@ -81,7 +81,6 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Dashboard Area */
         .dashboard {
             display: none;
             height: 100vh;
@@ -158,7 +157,6 @@
             color: #555;
         }
 
-        /* Floating Panel Window */
         .win11-panel {
             position: absolute;
             background: rgba(245, 245, 245, 0.92);
@@ -195,7 +193,6 @@
             display: none !important;
         }
 
-        /* Title Bar */
         .title-bar {
             height: 28px;
             display: flex;
@@ -215,7 +212,6 @@
             font-weight: 500;
         }
 
-        /* Control Buttons (Win11 Compact Style) */
         .controls {
             display: flex;
             height: 100%;
@@ -253,7 +249,6 @@
             fill: #ffffff;
         }
 
-        /* Panel Main Body & Footer */
         .panel-body {
             flex: 1;
             padding: 12px;
@@ -296,7 +291,6 @@
             font-weight: 600;
         }
 
-        /* Consolas Monospace Font untuk Input Ala SAP */
         .form-group input, .form-group select {
             padding: 5px 8px;
             border-radius: 4px;
@@ -318,7 +312,13 @@
             font-weight: 600;
         }
 
-        /* Resize Handles (8 Sisi) */
+        .error-message {
+            color: #c42b1c;
+            font-size: 10px;
+            margin-top: 4px;
+            display: none;
+        }
+
         .resizer { position: absolute; z-index: 10; }
         .resizer.n  { top: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
         .resizer.s  { bottom: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
@@ -332,12 +332,10 @@
 </head>
 <body>
 
-    <!-- Top Loading Bar (SAP Signature Theme) -->
     <div class="sap-progress-container" id="sapLoading">
         <div class="sap-progress-bar"></div>
     </div>
 
-    <!-- Dashboard Main View -->
     <div class="dashboard" id="dashboard">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-resizer" id="sidebarResizer"></div>
@@ -354,18 +352,14 @@
     </div>
 
     <script>
-        // Controller Loading Progress Real-time SAP
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQXs2xyQr7tM_qJShJpDN_jFhcwQV5C5lEBN1lRJOO04D6fLCQjshO7pAHdccd7Lnprw/exec';
+
         const sapLoader = {
             element: document.getElementById('sapLoading'),
-            start() {
-                this.element.classList.add('active');
-            },
-            stop() {
-                this.element.classList.remove('active');
-            }
+            start() { this.element.classList.add('active'); },
+            stop() { this.element.classList.remove('active'); }
         };
 
-        // Kamus Bahasa Multibahasa (i18n)
         const i18nDict = {
             id: {
                 panelTitle: 'Login Sistem',
@@ -617,7 +611,6 @@
             }
         }
 
-        // Template Body Form Login
         const loginBodyTemplate = `
             <form class="login-form" id="loginForm">
                 <div class="form-content">
@@ -641,31 +634,28 @@
                             <option value="jp">Japanese (JP)</option>
                         </select>
                     </div>
+                    <div class="error-message" id="errorMsg"></div>
                 </div>
             </form>
         `;
 
-        // Template Footer Action
         const loginFooterTemplate = `
             <button type="submit" form="loginForm" class="btn-soft btn-submit" id="btn-submit-text">Masuk</button>
         `;
 
-        // Instance Panel Login Window
         const loginPanel = new Win11Panel({
             title: 'Login Sistem',
             bodyContent: loginBodyTemplate,
             footerContent: loginFooterTemplate,
             x: Math.max(10, (window.innerWidth - 260) / 2),
-            y: Math.max(10, (window.innerHeight - 280) / 2),
+            y: Math.max(10, (window.innerHeight - 300) / 2),
             width: 260,
-            height: 280
+            height: 300
         });
 
-        // Real-time Update Bahasa dengan Simulasi Loading SAP
         document.body.addEventListener('change', (e) => {
             if (e.target.id === 'language') {
                 sapLoader.start();
-                
                 setTimeout(() => {
                     const lang = e.target.value;
                     const dict = i18nDict[lang] || i18nDict.id;
@@ -675,52 +665,67 @@
                     document.getElementById('lbl-password').innerText = dict.passwordLabel;
                     document.getElementById('lbl-language').innerText = dict.languageLabel;
                     document.getElementById('btn-submit-text').innerText = dict.signInBtn;
-                    
                     sapLoader.stop();
-                }, 300);
+                }, 200);
             }
         });
 
-        // Submit Logic (Real-time Loading Progress saat Autentikasi Login)
-        document.body.addEventListener('submit', (e) => {
+        document.body.addEventListener('submit', async (e) => {
             if (e.target.id === 'loginForm') {
                 e.preventDefault();
+                const errorEl = document.getElementById('errorMsg');
+                errorEl.style.display = 'none';
+
+                const client = document.getElementById('client').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const selectedLang = document.getElementById('language').value;
+
                 sapLoader.start();
 
-                setTimeout(() => {
-                    const selectedLang = document.getElementById('language').value;
-                    const dict = i18nDict[selectedLang] || i18nDict.id;
+                try {
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ client, username, password })
+                    });
 
-                    // Terapkan Bahasa ke Seluruh UI Dashboard
-                    document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
-                    document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
-                    document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
-                    document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
-                    document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
-                    document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
-
-                    loginPanel.close();
-                    document.getElementById('dashboard').classList.add('active');
-                    
+                    const result = await response.json();
                     sapLoader.stop();
-                }, 800);
+
+                    if (result.success) {
+                        const dict = i18nDict[selectedLang] || i18nDict.id;
+                        document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
+                        document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
+                        document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
+                        document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
+                        document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
+                        document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
+
+                        loginPanel.close();
+                        document.getElementById('dashboard').classList.add('active');
+                    } else {
+                        errorEl.innerText = result.message || 'Login gagal.';
+                        errorEl.style.display = 'block';
+                    }
+                } catch (err) {
+                    sapLoader.stop();
+                    errorEl.innerText = 'Gagal terhubung ke server.';
+                    errorEl.style.display = 'block';
+                }
             }
         });
 
-        // Event Interaksi Navigasi dengan Loading Bar Real-time
         document.body.addEventListener('click', (e) => {
             if (e.target.classList.contains('nav-item')) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 e.target.classList.add('active');
-
                 sapLoader.start();
-                setTimeout(() => {
-                    sapLoader.stop();
-                }, 400);
+                setTimeout(() => sapLoader.stop(), 300);
             }
         });
 
-        // Sidebar Resizer Logic
         const sidebar = document.getElementById('sidebar');
         const sidebarResizer = document.getElementById('sidebarResizer');
 
@@ -729,10 +734,8 @@
             const onMouseMove = (moveEvent) => {
                 const maxAllowedWidth = window.innerWidth - 50;
                 let newWidth = moveEvent.clientX;
-
                 if (newWidth < 50) newWidth = 50;
                 if (newWidth > maxAllowedWidth) newWidth = maxAllowedWidth;
-
                 sidebar.style.width = `${newWidth}px`;
             };
 
