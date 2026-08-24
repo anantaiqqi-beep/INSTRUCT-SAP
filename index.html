@@ -145,8 +145,7 @@
       padding: 6px 16px;
       height: 44px;
       background-color: #ffffff;
-      border-bottom: none;
-      box-shadow: none;
+      border-bottom: 1px solid #e2e8f0;
       z-index: 10;
     }
 
@@ -317,28 +316,28 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      background-color: #ffffff;
+      background-color: #f8fafc;
     }
 
     .content-toolbar {
-      padding: 6px 16px;
+      padding: 8px 16px;
       display: none;
       align-items: center;
-      background-color: #f8fafc;
+      background-color: #ffffff;
       border-bottom: 1px solid #e2e8f0;
     }
 
+    /* Tombol Back Menggunakan Arrow TreeView Style */
     .btn-back {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #334155;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      color: #64748b;
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.15s ease;
       user-select: none;
@@ -346,7 +345,7 @@
 
     .btn-back:hover {
       background: #f1f5f9;
-      color: #0f172a;
+      color: #1e293b;
       border-color: #94a3b8;
     }
 
@@ -360,12 +359,66 @@
       stroke-linejoin: round;
     }
 
+    /* Container Embed & Card Fallback */
+    .embed-container {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
     .embed-iframe {
       width: 100%;
       height: 100%;
       border: none;
       flex: 1;
-      display: none;
+    }
+
+    .fallback-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      padding: 24px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .fallback-card h3 {
+      font-size: 15px;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .fallback-card p {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .fallback-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #2563eb;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .fallback-card a:hover {
+      background-color: #1d4ed8;
     }
 
     /* --- SAP EASY ACCESS FLOATING PANEL (ROUNDED SEMPURNA) --- */
@@ -478,7 +531,7 @@
       color: #1d4ed8;
     }
 
-    /* Arrow Icon Line Art (Expand / Collapse) */
+    /* Arrow Icon Line Art Treeview (Expand / Collapse) */
     .sap-arrow {
       width: 14px;
       height: 14px;
@@ -616,19 +669,25 @@
 
     <!-- DASHBOARD CONTENT CONTAINER -->
     <div class="dashboard-content">
-      <!-- Toolbar Tombol Back (Hanya tampil saat embed aktif) -->
+      <!-- Toolbar Tombol Back Sesuai Style Arrow Treeview -->
       <div class="content-toolbar" id="contentToolbar">
-        <button class="btn-back" id="btnBack">
+        <button class="btn-back" id="btnBack" title="Kembali">
           <svg viewBox="0 0 24 24">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
+            <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
-          Kembali
         </button>
       </div>
 
-      <!-- Frame Embed Transaction -->
-      <iframe class="embed-iframe" id="embedFrame" src="about:blank"></iframe>
+      <!-- Frame Embed & Fallback Container -->
+      <div class="embed-container" id="embedContainer">
+        <!-- Fallback jika situs menolak iframe (seperti GitHub) -->
+        <div class="fallback-card" id="fallbackCard" style="display: none;">
+          <h3>Akses Terbatas oleh GitHub</h3>
+          <p>GitHub menolak untuk di-embed secara langsung melalui iFrame (Refused to connect). Klik tombol di bawah untuk membuka profil di tab baru.</p>
+          <a id="fallbackLink" href="#" target="_blank" rel="noopener noreferrer">Buka GitHub Profile</a>
+        </div>
+        <iframe class="embed-iframe" id="embedFrame" src="about:blank"></iframe>
+      </div>
     </div>
 
     <!-- FLOATING PANEL MENU TREE (ROUNDED SEMPURNA) -->
@@ -805,7 +864,10 @@
     const sapMenuPanel = document.getElementById('sapMenuPanel');
     const btnCloseSapMenu = document.getElementById('btnCloseSapMenu');
     const contentToolbar = document.getElementById('contentToolbar');
+    const embedContainer = document.getElementById('embedContainer');
     const embedFrame = document.getElementById('embedFrame');
+    const fallbackCard = document.getElementById('fallbackCard');
+    const fallbackLink = document.getElementById('fallbackLink');
     const btnBack = document.getElementById('btnBack');
 
     // Load data lokal & sesi saat pertama dibuka
@@ -917,32 +979,41 @@
       });
     });
 
-    // Double-Click Handler untuk Tree Node Folder & Executable Transaction
+    // Double-Click Handler untuk Executable Transaction
     document.querySelectorAll('.sap-tree .sap-item-content').forEach(itemContent => {
       itemContent.addEventListener('dblclick', (e) => {
         e.stopPropagation();
         
-        // Eksekusi Transaction Jika Punya Attribute data-url
         const embedUrl = itemContent.getAttribute('data-url');
         if (embedUrl) {
-          embedFrame.src = embedUrl;
-          embedFrame.style.display = 'block';
           contentToolbar.style.display = 'flex';
+          embedContainer.style.display = 'flex';
+
+          // Khusus GitHub, berikan fallback UI karena proteksi X-Frame-Options
+          if (embedUrl.includes('github.com')) {
+            embedFrame.style.display = 'none';
+            fallbackCard.style.display = 'flex';
+            fallbackLink.href = embedUrl;
+          } else {
+            fallbackCard.style.display = 'none';
+            embedFrame.style.display = 'block';
+            embedFrame.src = embedUrl;
+          }
+
           sapMenuPanel.classList.remove('active');
           btnMenuNav.classList.remove('active');
           return;
         }
 
-        // Toggle Folder Jika Bukan Transaction
         const parentLi = itemContent.closest('li');
         toggleNode(parentLi);
       });
     });
 
-    // Action Tombol Back (Menutup Embed)
+    // Action Tombol Back (Reset & Menutup Embed Container)
     btnBack.addEventListener('click', () => {
       embedFrame.src = 'about:blank';
-      embedFrame.style.display = 'none';
+      embedContainer.style.display = 'none';
       contentToolbar.style.display = 'none';
     });
 
@@ -968,7 +1039,7 @@
       
       // Reset Embed Frame
       embedFrame.src = 'about:blank';
-      embedFrame.style.display = 'none';
+      embedContainer.style.display = 'none';
       contentToolbar.style.display = 'none';
 
       dashboardView.style.display = 'none';
