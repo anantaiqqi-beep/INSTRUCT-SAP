@@ -137,7 +137,7 @@
       flex-direction: column;
     }
 
-    /* Header Nav */
+    /* Header Nav (Border Dihapus) */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -145,7 +145,7 @@
       padding: 6px 16px;
       height: 44px;
       background-color: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: none;
       z-index: 10;
     }
 
@@ -421,7 +421,7 @@
       background-color: #1d4ed8;
     }
 
-    /* --- SAP EASY ACCESS FLOATING PANEL (ROUNDED SEMPURNA) --- */
+    /* --- SAP EASY ACCESS FLOATING PANEL --- */
     .sap-panel {
       display: none;
       position: absolute;
@@ -531,7 +531,7 @@
       color: #1d4ed8;
     }
 
-    /* Arrow Icon Line Art Treeview (Expand / Collapse) */
+    /* Arrow Icon Line Art Treeview */
     .sap-arrow {
       width: 14px;
       height: 14px;
@@ -565,7 +565,7 @@
       flex-shrink: 0;
     }
 
-    /* Folder Icon Line Art */
+    /* Folder Icon */
     .sap-icon-folder {
       width: 15px;
       height: 15px;
@@ -577,7 +577,7 @@
       flex-shrink: 0;
     }
 
-    /* Transaction Dot Icon (Hitam Bulat Kecil) */
+    /* Transaction Dot Icon */
     .sap-icon-dot {
       width: 6px;
       height: 6px;
@@ -680,17 +680,16 @@
 
       <!-- Frame Embed & Fallback Container -->
       <div class="embed-container" id="embedContainer">
-        <!-- Fallback jika situs menolak iframe (seperti GitHub) -->
         <div class="fallback-card" id="fallbackCard" style="display: none;">
           <h3>Akses Terbatas oleh GitHub</h3>
-          <p>GitHub menolak untuk di-embed secara langsung melalui iFrame (Refused to connect). Klik tombol di bawah untuk membuka profil di tab baru.</p>
-          <a id="fallbackLink" href="#" target="_blank" rel="noopener noreferrer">Buka GitHub Profile</a>
+          <p>Halaman utama GitHub menolak untuk di-embed secara langsung via iframe. Klik tombol di bawah untuk membuka profil.</p>
+          <a id="fallbackLink" href="#" target="_blank" rel="noopener noreferrer">Buka Link</a>
         </div>
         <iframe class="embed-iframe" id="embedFrame" src="about:blank"></iframe>
       </div>
     </div>
 
-    <!-- FLOATING PANEL MENU TREE (ROUNDED SEMPURNA) -->
+    <!-- FLOATING PANEL MENU TREE -->
     <div class="sap-panel" id="sapMenuPanel">
       <div class="sap-header">
         <span>SAP Easy Access</span>
@@ -760,7 +759,7 @@
                 </div>
               </li>
 
-              <!-- Tools -->
+              <!-- Tools Folder -->
               <li class="active-node">
                 <div class="sap-item-content">
                   <span class="sap-arrow expanded">
@@ -820,12 +819,34 @@
                       <span>GitHub</span>
                     </div>
                     <ul class="nested" style="display: block;">
-                      <!-- Transaksi GitHub Profile dengan URL -->
                       <li>
                         <div class="sap-item-content sap-transaction-item" data-url="https://github.com/anantaiqqi-beep">
                           <span class="sap-arrow-placeholder"></span>
                           <span class="sap-icon-dot"></span>
                           <span>GitHub Profile</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <!-- Sub Folder Baru: AX 2012 -->
+                  <li class="active-node">
+                    <div class="sap-item-content">
+                      <span class="sap-arrow expanded">
+                        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                      </span>
+                      <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                      <span>AX 2012</span>
+                    </div>
+                    <ul class="nested" style="display: block;">
+                      <li>
+                        <!-- Item Transaksi: Consol AX By Ananta -->
+                        <div class="sap-item-content sap-transaction-item" data-url="https://raw.githack.com/anantaiqqi-beep/INSTRUCT-PART/77e22c06c115c78fe25d230c692563c71f9eb461/consoleAX2012.html">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>Consol AX By Ananta</span>
                         </div>
                       </li>
                     </ul>
@@ -870,7 +891,7 @@
     const fallbackLink = document.getElementById('fallbackLink');
     const btnBack = document.getElementById('btnBack');
 
-    // Load data lokal & sesi saat pertama dibuka
+    // Load data awal
     window.addEventListener('DOMContentLoaded', () => {
       const activeUser = sessionStorage.getItem('activeUser');
       if (activeUser) {
@@ -886,7 +907,7 @@
       }
     });
 
-    // Proses Submit Form Login
+    // Login Form Submit
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -922,7 +943,6 @@
       }
     });
 
-    // Tampilkan Dashboard & Sembunyikan Form Login
     function showDashboard(username) {
       loginView.style.display = 'none';
       dashboardView.style.display = 'flex';
@@ -932,14 +952,12 @@
       userAvatar.innerText = username.charAt(0).toUpperCase();
     }
 
-    // Toggle Pop-up Logout
     userProfileBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       userProfileBtn.classList.toggle('active');
       profilePopup.classList.toggle('active');
     });
 
-    // Toggle Floating SAP Menu Panel
     btnMenuNav.addEventListener('click', (e) => {
       e.stopPropagation();
       btnMenuNav.classList.toggle('active');
@@ -951,7 +969,6 @@
       btnMenuNav.classList.remove('active');
     });
 
-    // Toggle Node Expand/Collapse
     function toggleNode(parentLi) {
       const nestedUl = parentLi.querySelector('.nested');
       const arrowIcon = parentLi.querySelector('.sap-arrow');
@@ -970,7 +987,6 @@
       }
     }
 
-    // Single Click pada Ikon Arrow
     document.querySelectorAll('.sap-tree .sap-arrow').forEach(arrow => {
       arrow.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -979,7 +995,7 @@
       });
     });
 
-    // Double-Click Handler untuk Executable Transaction
+    // Double-Click Handler Executable Transaction
     document.querySelectorAll('.sap-tree .sap-item-content').forEach(itemContent => {
       itemContent.addEventListener('dblclick', (e) => {
         e.stopPropagation();
@@ -989,8 +1005,8 @@
           contentToolbar.style.display = 'flex';
           embedContainer.style.display = 'flex';
 
-          // Khusus GitHub, berikan fallback UI karena proteksi X-Frame-Options
-          if (embedUrl.includes('github.com')) {
+          // Menangani proteksi iframe halaman GitHub non-raw
+          if (embedUrl === 'https://github.com/anantaiqqi-beep') {
             embedFrame.style.display = 'none';
             fallbackCard.style.display = 'flex';
             fallbackLink.href = embedUrl;
@@ -1010,14 +1026,12 @@
       });
     });
 
-    // Action Tombol Back (Reset & Menutup Embed Container)
     btnBack.addEventListener('click', () => {
       embedFrame.src = 'about:blank';
       embedContainer.style.display = 'none';
       contentToolbar.style.display = 'none';
     });
 
-    // Close Panel ketika Klik Luar
     document.addEventListener('click', (e) => {
       if (!profilePopup.contains(e.target) && !userProfileBtn.contains(e.target)) {
         userProfileBtn.classList.remove('active');
@@ -1030,14 +1044,12 @@
       }
     });
 
-    // Logout Action
     btnLogout.addEventListener('click', () => {
       sessionStorage.removeItem('activeUser');
       userProfileBtn.classList.remove('active');
       profilePopup.classList.remove('active');
       sapMenuPanel.classList.remove('active');
       
-      // Reset Embed Frame
       embedFrame.src = 'about:blank';
       embedContainer.style.display = 'none';
       contentToolbar.style.display = 'none';
