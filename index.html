@@ -136,7 +136,7 @@
       position: relative;
     }
 
-    /* Header Nav (Garis pembatas dan shadow dihapus) */
+    /* Header Nav (Tanpa Garis Pembatas) */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -277,7 +277,7 @@
       color: #64748b;
     }
 
-    /* TOMBOL LOGOUT (Style disamakan persis dengan btn-login) */
+    /* TOMBOL LOGOUT (Samakan Style Dengan btn-login) */
     .btn-logout {
       width: 100%;
       padding: 8px 12px;
@@ -309,19 +309,19 @@
       fill: #333333;
     }
 
-    /* --- STYLES SAP EASY ACCESS (SIGNATURE BLUE) FLOATING PANEL --- */
+    /* --- SAP EASY ACCESS FLOATING PANEL --- */
     .sap-panel {
       display: none;
       position: absolute;
       top: 44px;
       left: 16px;
-      width: 320px;
-      background: #f4f6f9;
+      width: 300px;
+      background: #f8fafc;
       border: 1px solid #9bb2ce;
-      border-radius: 4px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       z-index: 1000;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .sap-panel.active {
@@ -331,15 +331,14 @@
     .sap-header {
       background: linear-gradient(180deg, #3d6c9e 0%, #2b4e73 100%);
       color: #ffffff;
-      padding: 6px 10px;
+      padding: 7px 12px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-      letter-spacing: 0.3px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
     }
 
     .sap-close-btn {
@@ -354,13 +353,13 @@
     }
 
     .sap-body {
-      padding: 8px 10px 12px 10px;
-      max-height: 400px;
+      padding: 10px 8px;
+      max-height: 420px;
       overflow-y: auto;
       background-color: #ffffff;
     }
 
-    /* SAP Tree Navigation Styles */
+    /* SAP Tree Component Line Art Style */
     .sap-tree, .sap-tree ul {
       list-style: none;
       padding-left: 16px;
@@ -372,104 +371,81 @@
     }
 
     .sap-tree li {
-      position: relative;
-      margin: 2px 0;
-      line-height: 20px;
-      font-size: 11px;
-      color: #222222;
+      margin: 3px 0;
+      font-size: 12px;
+      color: #333333;
       user-select: none;
-    }
-
-    /* Garis Cabang Tree SAP */
-    .sap-tree ul li::before {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -11px;
-      border-left: 1px dotted #888888;
-      border-bottom: 1px dotted #888888;
-      width: 8px;
-      height: 12px;
-    }
-
-    .sap-tree ul li::after {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: -11px;
-      border-left: 1px dotted #888888;
-      width: 1px;
-      height: 100%;
-    }
-
-    .sap-tree ul li:last-child::after {
-      display: none;
     }
 
     .sap-item-content {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 1px 4px;
-      border-radius: 2px;
+      gap: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
       cursor: pointer;
+      width: calc(100% - 10px);
     }
 
     .sap-item-content:hover {
-      background-color: #dbe7f5;
-      color: #000000;
+      background-color: #f1f5f9;
+      color: #1d4ed8;
     }
 
-    /* Node Toggler Icon (+ / -) */
-    .sap-toggler {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      line-height: 7px;
-      text-align: center;
-      border: 1px solid #666666;
-      background: #ffffff;
-      font-size: 8px;
-      font-weight: bold;
-      color: #333333;
-      cursor: pointer;
-      margin-right: 2px;
-    }
-
-    /* SAP Icons */
-    .sap-icon-folder {
+    /* Arrow Icon Line Art (Expand / Collapse) */
+    .sap-arrow {
       width: 14px;
       height: 14px;
-      background: #fdd835;
-      border: 1px solid #c0a000;
-      border-radius: 1px;
-      display: inline-block;
-      position: relative;
-    }
-    
-    .sap-icon-folder::before {
-      content: "";
-      position: absolute;
-      top: -3px;
-      left: 0;
-      width: 6px;
-      height: 3px;
-      background: #fdd835;
-      border: 1px solid #c0a000;
-      border-bottom: none;
-    }
-
-    .sap-icon-tcode {
-      width: 13px;
-      height: 13px;
-      background: #4b6e94;
-      border-radius: 2px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
-      font-size: 8px;
-      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    .sap-arrow svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sap-arrow.expanded {
+      transform: rotate(90deg);
+    }
+
+    .sap-arrow-placeholder {
+      width: 14px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Folder Icon Line Art */
+    .sap-icon-folder {
+      width: 15px;
+      height: 15px;
+      stroke: #475569;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* Transaction Dot Icon (Hitam Bulat Kecil) */
+    .sap-icon-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #1e293b;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      flex-shrink: 0;
     }
 
     .sap-tree .nested {
@@ -551,7 +527,7 @@
       </div>
     </nav>
 
-    <!-- FLOATING PANEL MENU TREE (SAP EASY ACCESS - SIGNATURE BLUE) -->
+    <!-- FLOATING PANEL MENU TREE (SAP EASY ACCESS) -->
     <div class="sap-panel" id="sapMenuPanel">
       <div class="sap-header">
         <span>SAP Easy Access</span>
@@ -559,143 +535,116 @@
       </div>
       <div class="sap-body">
         <ul class="sap-tree">
-          <!-- Root Favorites -->
+          
+          <!-- Favorites -->
           <li>
             <div class="sap-item-content">
-              <span class="sap-toggler">+</span>
-              <span class="sap-icon-folder"></span>
+              <span class="sap-arrow-placeholder"></span>
+              <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
               <span>Favorites</span>
             </div>
-            <ul class="nested">
-              <li>
-                <div class="sap-item-content">
-                  <span class="sap-icon-tcode">T</span>
-                  <span>SESSION_MANAGER - Easy Access</span>
-                </div>
-              </li>
-            </ul>
           </li>
 
-          <!-- Root SAP Menu -->
+          <!-- SAP Menu -->
           <li class="active-node">
             <div class="sap-item-content">
-              <span class="sap-toggler">-</span>
-              <span class="sap-icon-folder"></span>
-              <span>SAP menu</span>
+              <span class="sap-arrow expanded">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </span>
+              <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span>SAP Menu</span>
             </div>
+            
             <ul class="nested" style="display: block;">
-              <!-- Office -->
+              <!-- Sub Items Office, Accounting, Logistic, HR -->
               <li>
                 <div class="sap-item-content">
-                  <span class="sap-toggler">+</span>
-                  <span class="sap-icon-folder"></span>
+                  <span class="sap-arrow-placeholder"></span>
+                  <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
                   <span>Office</span>
                 </div>
-                <ul class="nested">
-                  <li>
-                    <div class="sap-item-content">
-                      <span class="sap-icon-tcode">T</span>
-                      <span>SBWP - Workplace</span>
-                    </div>
-                  </li>
-                </ul>
               </li>
-
-              <!-- Accounting -->
               <li>
                 <div class="sap-item-content">
-                  <span class="sap-toggler">+</span>
-                  <span class="sap-icon-folder"></span>
+                  <span class="sap-arrow-placeholder"></span>
+                  <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
                   <span>Accounting</span>
                 </div>
-                <ul class="nested">
-                  <!-- Financial Accounting -->
-                  <li>
-                    <div class="sap-item-content">
-                      <span class="sap-toggler">+</span>
-                      <span class="sap-icon-folder"></span>
-                      <span>Financial Accounting</span>
-                    </div>
-                    <ul class="nested">
-                      <li>
-                        <div class="sap-item-content">
-                          <span class="sap-icon-tcode">T</span>
-                          <span>FB01 - Post Document</span>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="sap-item-content">
-                          <span class="sap-icon-tcode">T</span>
-                          <span>F-02 - Enter G/L Account Posting</span>
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
               </li>
-
-              <!-- Logistics -->
               <li>
                 <div class="sap-item-content">
-                  <span class="sap-toggler">+</span>
-                  <span class="sap-icon-folder"></span>
+                  <span class="sap-arrow-placeholder"></span>
+                  <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
                   <span>Logistics</span>
                 </div>
-                <ul class="nested">
-                  <!-- Materials Management -->
-                  <li>
-                    <div class="sap-item-content">
-                      <span class="sap-toggler">+</span>
-                      <span class="sap-icon-folder"></span>
-                      <span>Materials Management</span>
-                    </div>
-                    <ul class="nested">
-                      <li>
-                        <div class="sap-item-content">
-                          <span class="sap-icon-tcode">T</span>
-                          <span>MM01 - Create Material</span>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="sap-item-content">
-                          <span class="sap-icon-tcode">T</span>
-                          <span>ME21N - Create Purchase Order</span>
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                  <!-- Sales and Distribution -->
-                  <li>
-                    <div class="sap-item-content">
-                      <span class="sap-toggler">+</span>
-                      <span class="sap-icon-folder"></span>
-                      <span>Sales and Distribution</span>
-                    </div>
-                    <ul class="nested">
-                      <li>
-                        <div class="sap-item-content">
-                          <span class="sap-icon-tcode">T</span>
-                          <span>VA01 - Create Sales Order</span>
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
               </li>
-
-              <!-- Human Resources -->
               <li>
                 <div class="sap-item-content">
-                  <span class="sap-toggler">+</span>
-                  <span class="sap-icon-folder"></span>
-                  <span>Human Resources</span>
+                  <span class="sap-arrow-placeholder"></span>
+                  <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span>HR</span>
                 </div>
-                <ul class="nested">
-                  <li>
+              </li>
+
+              <!-- Tools -->
+              <li class="active-node">
+                <div class="sap-item-content">
+                  <span class="sap-arrow expanded">
+                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </span>
+                  <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span>Tools</span>
+                </div>
+                <ul class="nested" style="display: block;">
+                  <!-- User Managements -->
+                  <li class="active-node">
                     <div class="sap-item-content">
-                      <span class="sap-icon-tcode">T</span>
-                      <span>PA30 - Maintain HR Master Data</span>
+                      <span class="sap-arrow expanded">
+                        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                      </span>
+                      <svg class="sap-icon-folder" viewBox="0 0 24 24">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                      <span>User Managements</span>
                     </div>
+                    <ul class="nested" style="display: block;">
+                      <!-- Transaction items dengan Dot Hitam Bulat Kecil -->
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>Create User</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>Change User</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>Delete User</span>
+                        </div>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>
@@ -811,24 +760,40 @@
       btnMenuNav.classList.remove('active');
     });
 
-    // Handle Interaksi SAP Easy Access Tree View (Expand/Collapse)
-    document.querySelectorAll('.sap-tree .sap-toggler').forEach(toggler => {
-      toggler.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const parentLi = toggler.closest('li');
-        const nestedUl = parentLi.querySelector('.nested');
-        
-        if (nestedUl) {
-          if (nestedUl.style.display === 'block' || parentLi.classList.contains('active-node')) {
-            nestedUl.style.display = 'none';
-            parentLi.classList.remove('active-node');
-            toggler.innerText = '+';
-          } else {
-            nestedUl.style.display = 'block';
-            parentLi.classList.add('active-node');
-            toggler.innerText = '-';
-          }
+    // Fungsi Pembantu Toggle Node Expand/Collapse
+    function toggleNode(parentLi) {
+      const nestedUl = parentLi.querySelector('.nested');
+      const arrowIcon = parentLi.querySelector('.sap-arrow');
+
+      if (nestedUl) {
+        const isExpanded = nestedUl.style.display === 'block' || parentLi.classList.contains('active-node');
+        if (isExpanded) {
+          nestedUl.style.display = 'none';
+          parentLi.classList.remove('active-node');
+          if (arrowIcon) arrowIcon.classList.remove('expanded');
+        } else {
+          nestedUl.style.display = 'block';
+          parentLi.classList.add('active-node');
+          if (arrowIcon) arrowIcon.classList.add('expanded');
         }
+      }
+    }
+
+    // Klik Single pada Ikon Arrow
+    document.querySelectorAll('.sap-tree .sap-arrow').forEach(arrow => {
+      arrow.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const parentLi = arrow.closest('li');
+        toggleNode(parentLi);
+      });
+    });
+
+    // Double-Click pada Seluruh Item Content Folder untuk Expand/Collapse
+    document.querySelectorAll('.sap-tree .sap-item-content').forEach(itemContent => {
+      itemContent.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        const parentLi = itemContent.closest('li');
+        toggleNode(parentLi);
       });
     });
 
