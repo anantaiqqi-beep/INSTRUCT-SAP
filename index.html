@@ -20,6 +20,128 @@
     body {
       background-color: buttonface;
       min-height: 100vh;
+      position: relative;
+    }
+
+    /* --- SAP SIGNATURE BLUE LOADING BAR --- */
+    .sap-loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background-color: rgba(220, 220, 220, 0.4);
+      z-index: 9999;
+      display: none;
+      overflow: hidden;
+    }
+
+    .sap-loading-bar-container.active {
+      display: block;
+    }
+
+    .sap-loading-bar {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, #0a6ed1 0%, #3582d8 50%, #0a6ed1 100%);
+      position: absolute;
+      box-shadow: 0 0 8px rgba(10, 110, 209, 0.6);
+      animation: sapProgress 1.2s infinite ease-in-out;
+    }
+
+    @keyframes sapProgress {
+      0% {
+        left: -40%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+
+    /* --- FLOATING NOTIFICATION PANEL (ALERT REPLACEMENT) --- */
+    .sap-toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 320px;
+      width: calc(100% - 40px);
+      pointer-events: none;
+    }
+
+    .sap-toast {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #0a6ed1;
+      border-radius: 6px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      color: #1e293b;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.25s ease-in-out;
+      pointer-events: auto;
+    }
+
+    .sap-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sap-toast-icon {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .sap-toast-content {
+      flex: 1;
+    }
+
+    .sap-toast-title {
+      font-weight: 700;
+      margin-bottom: 2px;
+      font-size: 12px;
+    }
+
+    .sap-toast-message {
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .sap-toast-error {
+      border-left-color: #bb0000;
+    }
+
+    .sap-toast-error .sap-toast-icon,
+    .sap-toast-error .sap-toast-title {
+      color: #bb0000;
+    }
+
+    .sap-toast-success {
+      border-left-color: #107e3e;
+    }
+
+    .sap-toast-success .sap-toast-icon,
+    .sap-toast-success .sap-toast-title {
+      color: #107e3e;
+    }
+
+    .sap-toast-info {
+      border-left-color: #0a6ed1;
+    }
+
+    .sap-toast-info .sap-toast-icon,
+    .sap-toast-info .sap-toast-title {
+      color: #0a6ed1;
     }
 
     /* --- STYLES LOGIN --- */
@@ -198,7 +320,7 @@
     .avatar {
       width: 26px;
       height: 26px;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      background: linear-gradient(135deg, #0a6ed1 0%, #084e96 100%);
       color: #ffffff;
       border-radius: 50%;
       display: flex;
@@ -206,7 +328,7 @@
       justify-content: center;
       font-weight: 700;
       font-size: 11px;
-      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 1px 3px rgba(10, 110, 209, 0.3);
     }
 
     .status-badge {
@@ -327,7 +449,6 @@
       border-bottom: 1px solid #e2e8f0;
     }
 
-    /* Tombol Back Menggunakan Arrow TreeView Style */
     .btn-back {
       display: inline-flex;
       align-items: center;
@@ -411,14 +532,14 @@
       font-size: 12px;
       font-weight: 600;
       color: #ffffff;
-      background-color: #2563eb;
+      background-color: #0a6ed1;
       border-radius: 6px;
       text-decoration: none;
       transition: background-color 0.2s ease;
     }
 
     .fallback-card a:hover {
-      background-color: #1d4ed8;
+      background-color: #084e96;
     }
 
     /* --- SAP EASY ACCESS FLOATING PANEL --- */
@@ -490,7 +611,6 @@
       user-select: none;
     }
 
-    /* Garis Root / Dotted Line Tree Cabang */
     .sap-tree ul li::before {
       content: "";
       position: absolute;
@@ -528,10 +648,9 @@
 
     .sap-item-content:hover {
       background-color: #f1f5f9;
-      color: #1d4ed8;
+      color: #0a6ed1;
     }
 
-    /* Arrow Icon Line Art Treeview */
     .sap-arrow {
       width: 14px;
       height: 14px;
@@ -565,7 +684,6 @@
       flex-shrink: 0;
     }
 
-    /* Folder Icon */
     .sap-icon-folder {
       width: 15px;
       height: 15px;
@@ -577,7 +695,6 @@
       flex-shrink: 0;
     }
 
-    /* Transaction Dot Icon */
     .sap-icon-dot {
       width: 6px;
       height: 6px;
@@ -599,11 +716,19 @@
 </head>
 <body>
 
+  <!-- SAP SIGNATURE BLUE LOADING BAR -->
+  <div class="sap-loading-bar-container" id="sapLoadingBar">
+    <div class="sap-loading-bar"></div>
+  </div>
+
+  <!-- FLOATING NOTIFICATION PANEL CONTAINER -->
+  <div class="sap-toast-container" id="toastContainer"></div>
+
   <!-- VIEW 1: LOGIN FORM -->
   <div class="login-wrapper" id="loginView">
     <div class="login-container">
       <div class="login-header">
-        <h2>Masuk</h2>
+        <h2>Logon</h2>
       </div>
 
       <form id="loginForm">
@@ -613,17 +738,17 @@
         </div>
 
         <div class="input-group">
-          <label for="password">Kata Sandi</label>
+          <label for="password">Password</label>
           <input type="password" id="password" required>
         </div>
 
         <div class="options">
           <label class="remember-me">
-            <input type="checkbox" id="rememberMe"> Ingat Saya
+            <input type="checkbox" id="rememberMe"> Remember Me
           </label>
         </div>
 
-        <button type="submit" id="btnLogin" class="btn-login">Masuk</button>
+        <button type="submit" id="btnLogin" class="btn-login">Login</button>
       </form>
     </div>
   </div>
@@ -661,7 +786,7 @@
             <svg viewBox="0 0 24 24">
               <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"/>
             </svg>
-            Keluar
+            Logout
           </button>
         </div>
       </div>
@@ -669,7 +794,6 @@
 
     <!-- DASHBOARD CONTENT CONTAINER -->
     <div class="dashboard-content">
-      <!-- Toolbar Tombol Back Sesuai Style Arrow Treeview -->
       <div class="content-toolbar" id="contentToolbar">
         <button class="btn-back" id="btnBack" title="Kembali">
           <svg viewBox="0 0 24 24">
@@ -829,7 +953,7 @@
                     </ul>
                   </li>
 
-                  <!-- Sub Folder Baru: AX 2012 -->
+                  <!-- AX 2012 -->
                   <li class="active-node">
                     <div class="sap-item-content">
                       <span class="sap-arrow expanded">
@@ -842,19 +966,16 @@
                     </div>
                     <ul class="nested" style="display: block;">
                       <li>
-                        <!-- Item Transaksi: Create MR Listing -->
                         <div class="sap-item-content sap-transaction-item" data-url="https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec?page=createMRListing">
                           <span class="sap-arrow-placeholder"></span>
                           <span class="sap-icon-dot"></span>
                           <span>Create MR Listing</span>
                         </div>
-                        <!-- Item Transaksi: MR Listing Data -->
                         <div class="sap-item-content sap-transaction-item" data-url="https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec?page=createMRListing">
                             <span class="sap-arrow-placeholder"></span>
                             <span class="sap-icon-dot"></span>
                             <span>MR Listing Data</span>
                         </div>
-                        <!-- Item Transaksi: Maintain Listing Data -->
                         <div class="sap-item-content sap-transaction-item" data-url="https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec?page=createMRListing">
                             <span class="sap-arrow-placeholder"></span>
                             <span class="sap-icon-dot"></span>
@@ -876,6 +997,49 @@
 
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec';
+
+    /* Controls Loading Bar & Notifications */
+    const sapLoadingBar = document.getElementById('sapLoadingBar');
+    const toastContainer = document.getElementById('toastContainer');
+
+    function showLoading() {
+      sapLoadingBar.classList.add('active');
+    }
+
+    function hideLoading() {
+      sapLoadingBar.classList.remove('active');
+    }
+
+    /* Floating Panel Notification Function */
+    function showNotification(title, message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `sap-toast sap-toast-${type}`;
+
+      let icon = 'ℹ';
+      if (type === 'error') icon = '✕';
+      if (type === 'success') icon = '✓';
+
+      toast.innerHTML = `
+        <div class="sap-toast-icon">${icon}</div>
+        <div class="sap-toast-content">
+          <div class="sap-toast-title">${title}</div>
+          <div class="sap-toast-message">${message}</div>
+        </div>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 250);
+      }, 4000);
+    }
 
     const loginView = document.getElementById('loginView');
     const dashboardView = document.getElementById('dashboardView');
@@ -927,7 +1091,8 @@
       const password = passwordInput.value.trim();
 
       btnLogin.disabled = true;
-      btnLogin.innerText = 'Memproses...';
+      btnLogin.innerText = 'Loading ...';
+      showLoading();
 
       try {
         const response = await fetch(`${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
@@ -944,14 +1109,16 @@
 
           sessionStorage.setItem('activeUser', result.username);
           showDashboard(result.username);
+          showNotification('Login Success', `Wellcome, ${result.username}!`, 'success');
         } else {
-          alert('Username atau Password salah!');
+          showNotification('Login Failed', 'Username or Password is wrong !', 'error');
         }
       } catch (err) {
-        alert('Gagal terhubung ke database.');
+        showNotification('An Error', 'Cant connect to server.', 'error');
       } finally {
         btnLogin.disabled = false;
-        btnLogin.innerText = 'Masuk';
+        btnLogin.innerText = 'Login';
+        hideLoading();
       }
     });
 
@@ -1017,15 +1184,20 @@
           contentToolbar.style.display = 'flex';
           embedContainer.style.display = 'flex';
 
+          showLoading();
+
           // Menangani proteksi iframe halaman GitHub non-raw
           if (embedUrl === 'https://github.com/anantaiqqi-beep') {
             embedFrame.style.display = 'none';
             fallbackCard.style.display = 'flex';
             fallbackLink.href = embedUrl;
+            hideLoading();
+            showNotification('Access Restricted', 'Page GitHub opened via fallback card.', 'info');
           } else {
             fallbackCard.style.display = 'none';
             embedFrame.style.display = 'block';
             embedFrame.src = embedUrl;
+            showNotification('Starting Transaction', 'Loading ...', 'info');
           }
 
           sapMenuPanel.classList.remove('active');
@@ -1038,10 +1210,16 @@
       });
     });
 
+    // Sembunyikan loading bar saat iframe selesai memuat
+    embedFrame.addEventListener('load', () => {
+      hideLoading();
+    });
+
     btnBack.addEventListener('click', () => {
       embedFrame.src = 'about:blank';
       embedContainer.style.display = 'none';
       contentToolbar.style.display = 'none';
+      showNotification('Done', 'Back to Home.', 'info');
     });
 
     document.addEventListener('click', (e) => {
@@ -1069,6 +1247,8 @@
       dashboardView.style.display = 'none';
       loginView.style.display = 'flex';
       passwordInput.value = '';
+
+      showNotification('Logout', 'Session has been stoped.', 'info');
     });
   </script>
 </body>
