@@ -9,7 +9,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -127,7 +127,7 @@
       cursor: not-allowed;
     }
 
-    /* --- STYLES DASHBOARD --- */
+    /* --- STYLES DASHBOARD (DIPERKECIL & MODERN) --- */
     #dashboardView {
       display: none;
       width: 100%;
@@ -135,28 +135,36 @@
       background-color: #ffffff;
     }
 
+    /* Header Nav Diperkecil (padding ringkas) */
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 24px;
+      padding: 6px 16px;
+      height: 44px;
       background-color: #ffffff;
-      border-bottom: 1px solid #eaeaea;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 16px;
     }
 
     .nav-links a {
       text-decoration: none;
-      color: #000000;
-      font-weight: 700;
-      font-size: 14px;
+      color: #374151;
+      font-weight: 600;
+      font-size: 12px;
+      transition: color 0.2s ease;
     }
 
-    /* Profile Avatar & Popup */
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    /* Container Profil User Modern */
     .user-profile-container {
       position: relative;
     }
@@ -166,68 +174,134 @@
       align-items: center;
       gap: 8px;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 4px 10px 4px 6px;
       border-radius: 20px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
       user-select: none;
     }
 
     .user-profile:hover {
-      background-color: #f0f0f0;
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .avatar-wrapper {
+      position: relative;
     }
 
     .avatar {
-      width: 32px;
-      height: 32px;
-      background-color: #007bff;
-      color: white;
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
+      font-weight: 700;
+      font-size: 11px;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Status indicator */
+    .status-badge {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border: 1.5px solid #ffffff;
+      border-radius: 50%;
     }
 
     .username-text {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
-      color: #333;
+      color: #1e293b;
     }
 
-    /* Popup Logout */
+    .dropdown-arrow {
+      width: 12px;
+      height: 12px;
+      fill: #64748b;
+      transition: transform 0.2s ease;
+    }
+
+    .user-profile.active .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Pop-up Logout Modern */
     .profile-popup {
       display: none;
       position: absolute;
       right: 0;
-      top: 42px;
+      top: 38px;
       background: #ffffff;
-      border: 1px solid #dcdcdc;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
       padding: 6px;
       z-index: 100;
-      min-width: 120px;
+      min-width: 150px;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
     }
 
     .profile-popup.active {
       display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .popup-user-info {
+      padding: 6px 10px 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 4px;
+    }
+
+    .popup-user-info .user-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .popup-user-info .user-status {
+      font-size: 10px;
+      color: #64748b;
     }
 
     .btn-logout {
       width: 100%;
-      padding: 8px 12px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 10px;
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      text-align: center;
+      transition: all 0.15s ease;
     }
 
     .btn-logout:hover {
-      background: #c82333;
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+
+    .btn-logout svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
     }
   </style>
 </head>
@@ -262,7 +336,7 @@
     </div>
   </div>
 
-  <!-- VIEW 2: DASHBOARD -->
+  <!-- VIEW 2: DASHBOARD HEADER LEBIH RINGKAS & MODERN -->
   <div id="dashboardView">
     <nav class="navbar">
       <div class="nav-links">
@@ -272,21 +346,38 @@
         <a href="#">Setting</a>
       </div>
 
+      <!-- User Profile Modern -->
       <div class="user-profile-container">
         <div class="user-profile" id="userProfileBtn">
-          <div class="avatar" id="userAvatar">A</div>
+          <div class="avatar-wrapper">
+            <div class="avatar" id="userAvatar">A</div>
+            <span class="status-badge"></span>
+          </div>
           <span class="username-text" id="displayUsername">User</span>
+          <svg class="dropdown-arrow" viewBox="0 0 20 20">
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+          </svg>
         </div>
 
+        <!-- Pop-up Dropdown -->
         <div class="profile-popup" id="profilePopup">
-          <button class="btn-logout" id="btnLogout">Logout</button>
+          <div class="popup-user-info">
+            <div class="user-name" id="popupUsername">User</div>
+            <div class="user-status">Online</div>
+          </div>
+          <button class="btn-logout" id="btnLogout">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 17v-3H9v-4h7V7l5 5-5 5M14 2a2 2 0 012 2v2h-2V4H5v16h9v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V4a2 2 0 012-2h9z"/>
+            </svg>
+            Keluar
+          </button>
         </div>
       </div>
     </nav>
   </div>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2iXIqQVBu0eC3u9M88qnyVBlBkDaTFYvWVtZTmdJcHxshxMoR3B4V9Oo-3OtwphC5Qg/exec';
 
     const loginView = document.getElementById('loginView');
     const dashboardView = document.getElementById('dashboardView');
@@ -300,6 +391,7 @@
     const profilePopup = document.getElementById('profilePopup');
     const btnLogout = document.getElementById('btnLogout');
     const displayUsername = document.getElementById('displayUsername');
+    const popupUsername = document.getElementById('popupUsername');
     const userAvatar = document.getElementById('userAvatar');
 
     // Load data lokal & sesi saat pertama dibuka
@@ -360,22 +452,26 @@
       dashboardView.style.display = 'block';
 
       displayUsername.innerText = username;
+      popupUsername.innerText = username;
       userAvatar.innerText = username.charAt(0).toUpperCase();
     }
 
     // Toggle Pop-up Logout
     userProfileBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      userProfileBtn.classList.toggle('active');
       profilePopup.classList.toggle('active');
     });
 
     document.addEventListener('click', () => {
+      userProfileBtn.classList.remove('active');
       profilePopup.classList.remove('active');
     });
 
     // Logout Action
     btnLogout.addEventListener('click', () => {
       sessionStorage.removeItem('activeUser');
+      userProfileBtn.classList.remove('active');
       profilePopup.classList.remove('active');
       dashboardView.style.display = 'none';
       loginView.style.display = 'flex';
