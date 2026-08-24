@@ -829,7 +829,7 @@
                     </ul>
                   </li>
 
-                  <!-- Sub Folder Baru: AX 2012 -->
+                  <!-- AX 2012 Folder -->
                   <li class="active-node">
                     <div class="sap-item-content">
                       <span class="sap-arrow expanded">
@@ -842,11 +842,24 @@
                     </div>
                     <ul class="nested" style="display: block;">
                       <li>
-                        <!-- Item Transaksi: Consol AX By Ananta -->
-                        <div class="sap-item-content sap-transaction-item" data-url="https://raw.githack.com/anantaiqqi-beep/INSTRUCT-PART/77e22c06c115c78fe25d230c692563c71f9eb461/consoleAX2012.html">
+                        <div class="sap-item-content sap-transaction-item" data-url="https://raw.githack.com/anantaiqqi-beep/INSTRUCT-SAP/75d7b77265bd0d6bcdf759f93beb1c1150b7beca/createMRlisting">
                           <span class="sap-arrow-placeholder"></span>
                           <span class="sap-icon-dot"></span>
-                          <span>Consol AX By Ananta</span>
+                          <span>Create MR Listing</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content sap-transaction-item" data-url="#">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>MR Listing Data</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content sap-transaction-item" data-url="#">
+                          <span class="sap-arrow-placeholder"></span>
+                          <span class="sap-icon-dot"></span>
+                          <span>Maintain MR Listing Data</span>
                         </div>
                       </li>
                     </ul>
@@ -1001,7 +1014,7 @@
         e.stopPropagation();
         
         const embedUrl = itemContent.getAttribute('data-url');
-        if (embedUrl) {
+        if (embedUrl && embedUrl !== '#') {
           contentToolbar.style.display = 'flex';
           embedContainer.style.display = 'flex';
 
