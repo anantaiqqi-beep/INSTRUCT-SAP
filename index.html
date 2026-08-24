@@ -127,15 +127,16 @@
       cursor: not-allowed;
     }
 
-    /* --- STYLES DASHBOARD (DIPERKECIL & MODERN) --- */
+    /* --- STYLES DASHBOARD --- */
     #dashboardView {
       display: none;
       width: 100%;
       min-height: 100vh;
       background-color: #ffffff;
+      position: relative;
     }
 
-    /* Header Nav Diperkecil (padding ringkas) */
+    /* Header Nav (Garis pembatas dan shadow dihapus) */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -143,8 +144,8 @@
       padding: 6px 16px;
       height: 44px;
       background-color: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      border-bottom: none;
+      box-shadow: none;
     }
 
     .nav-links {
@@ -158,13 +159,15 @@
       font-weight: 600;
       font-size: 12px;
       transition: color 0.2s ease;
+      cursor: pointer;
+      user-select: none;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover, .nav-links a.active {
       color: #2563eb;
     }
 
-    /* Container Profil User Modern */
+    /* User Profile Container */
     .user-profile-container {
       position: relative;
     }
@@ -205,7 +208,6 @@
       box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
     }
 
-    /* Status indicator */
     .status-badge {
       position: absolute;
       bottom: -1px;
@@ -234,7 +236,7 @@
       transform: rotate(180deg);
     }
 
-    /* Pop-up Logout Modern */
+    /* Pop-up Profile */
     .profile-popup {
       display: none;
       position: absolute;
@@ -244,9 +246,9 @@
       border: 1px solid #e2e8f0;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
       border-radius: 10px;
-      padding: 6px;
+      padding: 8px;
       z-index: 100;
-      min-width: 150px;
+      min-width: 160px;
       opacity: 0;
       transform: translateY(-6px);
       transition: opacity 0.15s ease, transform 0.15s ease;
@@ -259,9 +261,9 @@
     }
 
     .popup-user-info {
-      padding: 6px 10px 8px 10px;
+      padding: 4px 6px 8px 6px;
       border-bottom: 1px solid #f1f5f9;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
     .popup-user-info .user-name {
@@ -275,33 +277,207 @@
       color: #64748b;
     }
 
+    /* TOMBOL LOGOUT (Style disamakan persis dengan btn-login) */
     .btn-logout {
       width: 100%;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333333;
+      background: linear-gradient(180deg, #ffffff 0%, #e6e6e6 60%, #d8d8d8 100%);
+      border: 1.5px solid #b8b8b8;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: all 0.15s ease-in-out;
+      user-select: none;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 7px 10px;
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
     }
 
     .btn-logout:hover {
-      background: #dc2626;
-      color: #ffffff;
-      border-color: #dc2626;
+      background: linear-gradient(180deg, #ffffff 0%, #ececec 60%, #e0e0e0 100%);
+      border-color: #a0a0a0;
+      color: #111111;
     }
 
     .btn-logout svg {
       width: 14px;
       height: 14px;
-      fill: currentColor;
+      fill: #333333;
+    }
+
+    /* --- STYLES SAP EASY ACCESS (SIGNATURE BLUE) FLOATING PANEL --- */
+    .sap-panel {
+      display: none;
+      position: absolute;
+      top: 44px;
+      left: 16px;
+      width: 320px;
+      background: #f4f6f9;
+      border: 1px solid #9bb2ce;
+      border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      z-index: 1000;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .sap-panel.active {
+      display: block;
+    }
+
+    .sap-header {
+      background: linear-gradient(180deg, #3d6c9e 0%, #2b4e73 100%);
+      color: #ffffff;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      letter-spacing: 0.3px;
+    }
+
+    .sap-close-btn {
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      color: #dce6f2;
+    }
+
+    .sap-close-btn:hover {
+      color: #ffffff;
+    }
+
+    .sap-body {
+      padding: 8px 10px 12px 10px;
+      max-height: 400px;
+      overflow-y: auto;
+      background-color: #ffffff;
+    }
+
+    /* SAP Tree Navigation Styles */
+    .sap-tree, .sap-tree ul {
+      list-style: none;
+      padding-left: 16px;
+      margin: 0;
+    }
+
+    .sap-tree {
+      padding-left: 0;
+    }
+
+    .sap-tree li {
+      position: relative;
+      margin: 2px 0;
+      line-height: 20px;
+      font-size: 11px;
+      color: #222222;
+      user-select: none;
+    }
+
+    /* Garis Cabang Tree SAP */
+    .sap-tree ul li::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -11px;
+      border-left: 1px dotted #888888;
+      border-bottom: 1px dotted #888888;
+      width: 8px;
+      height: 12px;
+    }
+
+    .sap-tree ul li::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: -11px;
+      border-left: 1px dotted #888888;
+      width: 1px;
+      height: 100%;
+    }
+
+    .sap-tree ul li:last-child::after {
+      display: none;
+    }
+
+    .sap-item-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .sap-item-content:hover {
+      background-color: #dbe7f5;
+      color: #000000;
+    }
+
+    /* Node Toggler Icon (+ / -) */
+    .sap-toggler {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      line-height: 7px;
+      text-align: center;
+      border: 1px solid #666666;
+      background: #ffffff;
+      font-size: 8px;
+      font-weight: bold;
+      color: #333333;
+      cursor: pointer;
+      margin-right: 2px;
+    }
+
+    /* SAP Icons */
+    .sap-icon-folder {
+      width: 14px;
+      height: 14px;
+      background: #fdd835;
+      border: 1px solid #c0a000;
+      border-radius: 1px;
+      display: inline-block;
+      position: relative;
+    }
+    
+    .sap-icon-folder::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 0;
+      width: 6px;
+      height: 3px;
+      background: #fdd835;
+      border: 1px solid #c0a000;
+      border-bottom: none;
+    }
+
+    .sap-icon-tcode {
+      width: 13px;
+      height: 13px;
+      background: #4b6e94;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 8px;
+      font-weight: bold;
+    }
+
+    .sap-tree .nested {
+      display: none;
+    }
+
+    .sap-tree .active-node > .nested {
+      display: block;
     }
   </style>
 </head>
@@ -336,11 +512,11 @@
     </div>
   </div>
 
-  <!-- VIEW 2: DASHBOARD HEADER LEBIH RINGKAS & MODERN -->
+  <!-- VIEW 2: DASHBOARD HEADER -->
   <div id="dashboardView">
     <nav class="navbar">
       <div class="nav-links">
-        <a href="#">Menu</a>
+        <a id="btnMenuNav">Menu</a>
         <a href="#">Recents</a>
         <a href="#">User</a>
         <a href="#">Setting</a>
@@ -374,6 +550,161 @@
         </div>
       </div>
     </nav>
+
+    <!-- FLOATING PANEL MENU TREE (SAP EASY ACCESS - SIGNATURE BLUE) -->
+    <div class="sap-panel" id="sapMenuPanel">
+      <div class="sap-header">
+        <span>SAP Easy Access</span>
+        <span class="sap-close-btn" id="btnCloseSapMenu">&times;</span>
+      </div>
+      <div class="sap-body">
+        <ul class="sap-tree">
+          <!-- Root Favorites -->
+          <li>
+            <div class="sap-item-content">
+              <span class="sap-toggler">+</span>
+              <span class="sap-icon-folder"></span>
+              <span>Favorites</span>
+            </div>
+            <ul class="nested">
+              <li>
+                <div class="sap-item-content">
+                  <span class="sap-icon-tcode">T</span>
+                  <span>SESSION_MANAGER - Easy Access</span>
+                </div>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Root SAP Menu -->
+          <li class="active-node">
+            <div class="sap-item-content">
+              <span class="sap-toggler">-</span>
+              <span class="sap-icon-folder"></span>
+              <span>SAP menu</span>
+            </div>
+            <ul class="nested" style="display: block;">
+              <!-- Office -->
+              <li>
+                <div class="sap-item-content">
+                  <span class="sap-toggler">+</span>
+                  <span class="sap-icon-folder"></span>
+                  <span>Office</span>
+                </div>
+                <ul class="nested">
+                  <li>
+                    <div class="sap-item-content">
+                      <span class="sap-icon-tcode">T</span>
+                      <span>SBWP - Workplace</span>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Accounting -->
+              <li>
+                <div class="sap-item-content">
+                  <span class="sap-toggler">+</span>
+                  <span class="sap-icon-folder"></span>
+                  <span>Accounting</span>
+                </div>
+                <ul class="nested">
+                  <!-- Financial Accounting -->
+                  <li>
+                    <div class="sap-item-content">
+                      <span class="sap-toggler">+</span>
+                      <span class="sap-icon-folder"></span>
+                      <span>Financial Accounting</span>
+                    </div>
+                    <ul class="nested">
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-icon-tcode">T</span>
+                          <span>FB01 - Post Document</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-icon-tcode">T</span>
+                          <span>F-02 - Enter G/L Account Posting</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Logistics -->
+              <li>
+                <div class="sap-item-content">
+                  <span class="sap-toggler">+</span>
+                  <span class="sap-icon-folder"></span>
+                  <span>Logistics</span>
+                </div>
+                <ul class="nested">
+                  <!-- Materials Management -->
+                  <li>
+                    <div class="sap-item-content">
+                      <span class="sap-toggler">+</span>
+                      <span class="sap-icon-folder"></span>
+                      <span>Materials Management</span>
+                    </div>
+                    <ul class="nested">
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-icon-tcode">T</span>
+                          <span>MM01 - Create Material</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-icon-tcode">T</span>
+                          <span>ME21N - Create Purchase Order</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                  <!-- Sales and Distribution -->
+                  <li>
+                    <div class="sap-item-content">
+                      <span class="sap-toggler">+</span>
+                      <span class="sap-icon-folder"></span>
+                      <span>Sales and Distribution</span>
+                    </div>
+                    <ul class="nested">
+                      <li>
+                        <div class="sap-item-content">
+                          <span class="sap-icon-tcode">T</span>
+                          <span>VA01 - Create Sales Order</span>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Human Resources -->
+              <li>
+                <div class="sap-item-content">
+                  <span class="sap-toggler">+</span>
+                  <span class="sap-icon-folder"></span>
+                  <span>Human Resources</span>
+                </div>
+                <ul class="nested">
+                  <li>
+                    <div class="sap-item-content">
+                      <span class="sap-icon-tcode">T</span>
+                      <span>PA30 - Maintain HR Master Data</span>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -393,6 +724,11 @@
     const displayUsername = document.getElementById('displayUsername');
     const popupUsername = document.getElementById('popupUsername');
     const userAvatar = document.getElementById('userAvatar');
+
+    /* SAP Menu Panel Elements */
+    const btnMenuNav = document.getElementById('btnMenuNav');
+    const sapMenuPanel = document.getElementById('sapMenuPanel');
+    const btnCloseSapMenu = document.getElementById('btnCloseSapMenu');
 
     // Load data lokal & sesi saat pertama dibuka
     window.addEventListener('DOMContentLoaded', () => {
@@ -463,9 +799,50 @@
       profilePopup.classList.toggle('active');
     });
 
-    document.addEventListener('click', () => {
-      userProfileBtn.classList.remove('active');
-      profilePopup.classList.remove('active');
+    // Toggle Floating SAP Menu Panel
+    btnMenuNav.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btnMenuNav.classList.toggle('active');
+      sapMenuPanel.classList.toggle('active');
+    });
+
+    btnCloseSapMenu.addEventListener('click', () => {
+      sapMenuPanel.classList.remove('active');
+      btnMenuNav.classList.remove('active');
+    });
+
+    // Handle Interaksi SAP Easy Access Tree View (Expand/Collapse)
+    document.querySelectorAll('.sap-tree .sap-toggler').forEach(toggler => {
+      toggler.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const parentLi = toggler.closest('li');
+        const nestedUl = parentLi.querySelector('.nested');
+        
+        if (nestedUl) {
+          if (nestedUl.style.display === 'block' || parentLi.classList.contains('active-node')) {
+            nestedUl.style.display = 'none';
+            parentLi.classList.remove('active-node');
+            toggler.innerText = '+';
+          } else {
+            nestedUl.style.display = 'block';
+            parentLi.classList.add('active-node');
+            toggler.innerText = '-';
+          }
+        }
+      });
+    });
+
+    // Sembunyikan Pop-up & Panel ketika mengklik area luar
+    document.addEventListener('click', (e) => {
+      if (!profilePopup.contains(e.target) && !userProfileBtn.contains(e.target)) {
+        userProfileBtn.classList.remove('active');
+        profilePopup.classList.remove('active');
+      }
+      
+      if (!sapMenuPanel.contains(e.target) && e.target !== btnMenuNav) {
+        sapMenuPanel.classList.remove('active');
+        btnMenuNav.classList.remove('active');
+      }
     });
 
     // Logout Action
@@ -473,6 +850,7 @@
       sessionStorage.removeItem('activeUser');
       userProfileBtn.classList.remove('active');
       profilePopup.classList.remove('active');
+      sapMenuPanel.classList.remove('active');
       dashboardView.style.display = 'none';
       loginView.style.display = 'flex';
       passwordInput.value = '';
