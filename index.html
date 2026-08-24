@@ -1,961 +1,386 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard System</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-size: 11px;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Dashboard System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            background-color: ButtonFace;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            font-family: 'Segoe UI Variable Text', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            user-select: none;
-        }
+    *:focus {
+      outline: none;
+    }
 
-        /* SAP Signature Top Progress Bar */
-        .sap-progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: rgba(255, 255, 255, 0.2);
-            z-index: 99999;
-            display: none;
-            overflow: hidden;
-        }
+    body {
+      background-color: buttonface;
+      min-height: 100vh;
+    }
 
-        .sap-progress-container.active {
-            display: block;
-        }
+    /* --- STYLES LOGIN --- */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
 
-        .sap-progress-bar {
-            height: 100%;
-            width: 40%;
-            background: linear-gradient(90deg, #f0ab00, #fbbf24, #f0ab00);
-            box-shadow: 0 0 8px rgba(240, 171, 0, 0.8);
-            position: absolute;
-            animation: sapIndeterminate 1.2s infinite ease-in-out;
-        }
+    .login-container {
+      background: #ffffff;
+      padding: 18px 20px;
+      width: 100%;
+      max-width: 270px;
+      border-radius: 8px;
+      border: 1px solid #dcdcdc;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
-        @keyframes sapIndeterminate {
-            0% { left: -40%; width: 30%; }
-            50% { width: 50%; }
-            100% { left: 100%; width: 30%; }
-        }
+    .login-header {
+      text-align: center;
+      margin-bottom: 14px;
+    }
 
-        /* Soft Gradient Button */
-        .btn-soft {
-            background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 100%);
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            border-radius: 6px;
-            color: #242424;
-            padding: 4px 12px;
-            cursor: pointer;
-            outline: none;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            transition: all 0.15s ease-in-out;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .login-header h2 {
+      color: #222222;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
 
-        .btn-soft:hover {
-            background: linear-gradient(180deg, #fbfbfb 0%, #e8eaed 100%);
-            border-color: rgba(0, 0, 0, 0.22);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        }
+    .input-group {
+      margin-bottom: 10px;
+    }
 
-        .btn-soft:active {
-            background: linear-gradient(180deg, #e4e6e9 0%, #eeeff2 100%);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
+    .input-group label {
+      display: block;
+      margin-bottom: 4px;
+      color: #444444;
+      font-size: 11px;
+      font-weight: 600;
+    }
 
-        .dashboard {
-            display: none;
-            height: 100vh;
-            width: 100vw;
-            background: #f3f3f3;
-            position: relative;
-        }
+    .input-group input {
+      width: 100%;
+      padding: 7px 10px;
+      font-size: 12px;
+      border: 1.5px solid #cccccc;
+      border-radius: 6px;
+      background-color: #fafafa;
+      transition: all 0.15s ease-in-out;
+    }
 
-        .dashboard.active {
-            display: flex;
-        }
+    .input-group input:focus {
+      border-color: #999999;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+    }
 
-        /* SAP Sidebar Tree Styling */
-        .sidebar {
-            width: 220px;
-            background: #ffffff;
-            border-right: 1px solid rgba(0, 0, 0, 0.12);
-            display: flex;
-            flex-direction: column;
-            padding: 8px 6px;
-            gap: 2px;
-            position: relative;
-            flex-shrink: 0;
-            min-width: 120px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
+    .options {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
 
-        .sidebar-resizer {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            cursor: ew-resize;
-            z-index: 20;
-            background: transparent;
-            transition: background 0.15s;
-        }
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #555555;
+      cursor: pointer;
+    }
 
-        .sidebar-resizer:hover, .sidebar-resizer.resizing {
-            background: rgba(0, 95, 184, 0.3);
-        }
+    .remember-me input {
+      cursor: pointer;
+      accent-color: #666666;
+    }
 
-        .sidebar .brand {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 6px 8px;
-            margin-bottom: 4px;
-            color: #004e9a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border-bottom: 1px solid #e5e5e5;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .btn-login {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333333;
+      background: linear-gradient(180deg, #ffffff 0%, #e6e6e6 60%, #d8d8d8 100%);
+      border: 1.5px solid #b8b8b8;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: all 0.15s ease-in-out;
+      user-select: none;
+    }
 
-        .tree-node {
-            display: flex;
-            align-items: center;
-            padding: 5px 6px;
-            border-radius: 4px;
-            color: #1a1a1a;
-            cursor: pointer;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            gap: 6px;
-            transition: background 0.15s ease, color 0.15s ease;
-        }
+    .btn-login:hover {
+      background: linear-gradient(180deg, #ffffff 0%, #ececec 60%, #e0e0e0 100%);
+      border-color: #a0a0a0;
+      color: #111111;
+    }
 
-        .tree-node:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-        .tree-node.active {
-            background: #e5f1fb;
-            color: #005fb8;
-            font-weight: 600;
-        }
+    /* --- STYLES DASHBOARD --- */
+    #dashboardView {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background-color: #ffffff;
+    }
 
-        /* Modern Chevron Arrow with Smooth Rotation */
-        .tree-arrow {
-            width: 12px;
-            height: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #eaeaea;
+    }
 
-        .tree-arrow svg {
-            width: 10px;
-            height: 10px;
-            fill: #666666;
-            transition: fill 0.15s ease;
-        }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
 
-        .tree-node:hover .tree-arrow svg {
-            fill: #1a1a1a;
-        }
+    .nav-links a {
+      text-decoration: none;
+      color: #000000;
+      font-weight: 700;
+      font-size: 14px;
+    }
 
-        .tree-arrow.expanded {
-            transform: rotate(90deg);
-        }
+    /* Profile Avatar & Popup */
+    .user-profile-container {
+      position: relative;
+    }
 
-        .tree-icon {
-            width: 14px;
-            height: 14px;
-            fill: #555555;
-            flex-shrink: 0;
-        }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 20px;
+      user-select: none;
+    }
 
-        /* Smooth Expand/Collapse Subtree Container */
-        .tree-children {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            padding-left: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    .user-profile:hover {
+      background-color: #f0f0f0;
+    }
 
-        .tree-children.open {
-            opacity: 1;
-        }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-        /* Content Container & Embedded View Styling */
-        .main-content {
-            flex: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            background: #ffffff;
-            position: relative;
-        }
+    .username-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
 
-        .content-placeholder {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+    /* Popup Logout */
+    .profile-popup {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 42px;
+      background: #ffffff;
+      border: 1px solid #dcdcdc;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      padding: 6px;
+      z-index: 100;
+      min-width: 120px;
+    }
 
-        .main-content h1 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #004e9a;
-        }
+    .profile-popup.active {
+      display: block;
+    }
 
-        .main-content p {
-            color: #555;
-        }
+    .btn-logout {
+      width: 100%;
+      padding: 8px 12px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
 
-        .embed-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: none;
-            background: #ffffff;
-        }
-
-        .embed-iframe.active {
-            display: block;
-        }
-
-        /* Window Panel Styling */
-        .win11-panel {
-            position: absolute;
-            background: rgba(245, 245, 245, 0.92);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.18);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            min-width: 200px;
-            min-height: 28px;
-            touch-action: none;
-        }
-
-        .win11-panel.maximized {
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            border-radius: 0 !important;
-            border: none !important;
-        }
-
-        .win11-panel.collapsed {
-            height: 28px !important;
-            min-height: 28px !important;
-        }
-
-        .win11-panel.collapsed .panel-body,
-        .win11-panel.collapsed .panel-footer,
-        .win11-panel.collapsed .resizer {
-            display: none !important;
-        }
-
-        .title-bar {
-            height: 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 10px;
-            background: rgba(28, 28, 28, 0.88);
-            backdrop-filter: blur(10px);
-            cursor: default;
-            flex-shrink: 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-        }
-
-        .title-bar .title {
-            font-size: 11px;
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        .controls {
-            display: flex;
-            height: 100%;
-        }
-
-        .btn-win11 {
-            width: 28px;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: transparent;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            transition: background-color 0.15s;
-        }
-
-        .btn-win11:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .btn-win11.btn-close:hover {
-            background-color: #c42b1c;
-        }
-
-        .btn-win11 svg path,
-        .btn-win11 svg rect {
-            fill: #cccccc;
-            transition: fill 0.15s;
-        }
-
-        .btn-win11:hover svg path,
-        .btn-win11:hover svg rect {
-            fill: #ffffff;
-        }
-
-        .panel-body {
-            flex: 1;
-            padding: 12px;
-            color: #1c1c1c;
-            overflow-y: auto;
-            user-select: text;
-        }
-
-        .panel-footer {
-            padding: 8px 12px;
-            background: rgba(235, 235, 235, 0.9);
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-            display: flex;
-            justify-content: flex-end;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .form-content {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .form-group label {
-            font-size: 10px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .form-group input, .form-group select {
-            padding: 5px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.9);
-            outline: none;
-            font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
-            font-size: 11px;
-            letter-spacing: 0.3px;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: #005fb8;
-            background: #ffffff;
-        }
-
-        .btn-submit {
-            width: 100%;
-            font-weight: 600;
-        }
-
-        .error-message {
-            color: #c42b1c;
-            font-size: 10px;
-            margin-top: 4px;
-            display: none;
-        }
-
-        .resizer { position: absolute; z-index: 10; }
-        .resizer.n  { top: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
-        .resizer.s  { bottom: 0; left: 6px; right: 6px; height: 4px; cursor: ns-resize; }
-        .resizer.e  { right: 0; top: 6px; bottom: 6px; width: 4px; cursor: ew-resize; }
-        .resizer.w  { left: 0; top: 6px; bottom: 6px; width: 4px; cursor: ew-resize; }
-        .resizer.nw { top: 0; left: 0; width: 6px; height: 6px; cursor: nwse-resize; }
-        .resizer.ne { top: 0; right: 0; width: 6px; height: 6px; cursor: nesw-resize; }
-        .resizer.sw { bottom: 0; left: 0; width: 6px; height: 6px; cursor: nesw-resize; }
-        .resizer.se { bottom: 0; right: 0; width: 6px; height: 6px; cursor: nwse-resize; }
-    </style>
+    .btn-logout:hover {
+      background: #c82333;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="sap-progress-container" id="sapLoading">
-        <div class="sap-progress-bar"></div>
-    </div>
+  <!-- VIEW 1: LOGIN FORM -->
+  <div class="login-wrapper" id="loginView">
+    <div class="login-container">
+      <div class="login-header">
+        <h2>Masuk</h2>
+      </div>
 
-    <div class="dashboard" id="dashboard">
-        <!-- Sidebar Navigation (SAP Style Tree) -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-resizer" id="sidebarResizer"></div>
-            <div class="brand" id="i18n-brand">SAP Easy Access</div>
-
-            <!-- Dashboard Root Item -->
-            <div class="tree-node active" id="treeNavDashboard">
-                <span class="tree-arrow" style="visibility: hidden;"></span>
-                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 1L1 7h2v7h4V10h2v4h4V7h2L8 1z"/></svg>
-                <span id="i18n-nav-dashboard">Dashboard</span>
-            </div>
-
-            <!-- Parent Folder Node: User Management -->
-            <div class="tree-node" id="nodeUserMgmt">
-                <span class="tree-arrow" id="arrowUserMgmt">
-                    <svg viewBox="0 0 16 16"><path d="M6 3.5a.5.5 0 0 1 .854-.354l4 4a.5.5 0 0 1 0 .708l-4 4A.5.5 0 0 1 6 11.5v-8z"/></svg>
-                </span>
-                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M3 2v12h10V2H3zm9 11H4V3h8v10zM5 5h6v1H5V5zm0 3h6v1H5V8zm0 3h4v1H5v-1z"/></svg>
-                <span id="i18n-nav-usermgmt">User Managements</span>
-            </div>
-
-            <!-- Sub Tree: User Management Options -->
-            <div class="tree-children" id="childrenUserMgmt">
-                <div class="tree-node" id="itemCreateUser">
-                    <span class="tree-arrow" style="visibility: hidden;"></span>
-                    <svg class="tree-icon" viewBox="0 0 16 16"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm2 1H6a4 4 0 00-4 4v1h12v-1a4 4 0 00-4-4z"/></svg>
-                    <span>Create User (SU01)</span>
-                </div>
-            </div>
-
-            <!-- Additional Nav Tree Nodes -->
-            <div class="tree-node" id="treeNavAnalytics">
-                <span class="tree-arrow" style="visibility: hidden;"></span>
-                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 14h14v1H1v-1zm2-3h2v2H3v-2zm4-4h2v6H7V7zm4-5h2v11h-2V2z"/></svg>
-                <span id="i18n-nav-analytics">Analisis</span>
-            </div>
-
-            <div class="tree-node" id="treeNavInventory">
-                <span class="tree-arrow" style="visibility: hidden;"></span>
-                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M1 3h14v10H1V3zm2 2v6h10V5H3z"/></svg>
-                <span id="i18n-nav-inventory">Inventaris</span>
-            </div>
-
-            <div class="tree-node" id="treeNavSettings">
-                <span class="tree-arrow" style="visibility: hidden;"></span>
-                <svg class="tree-icon" viewBox="0 0 16 16"><path d="M9.1 1a1.5 1.5 0 0 0-2.2 0l-.7.7a1.5 1.5 0 0 1-1.6.3l-.9-.4a1.5 1.5 0 0 0-2.1.8l-.4.9a1.5 1.5 0 0 1-1.3 1v1a1.5 1.5 0 0 1 1.3 1l.4.9a1.5 1.5 0 0 0 2.1.8l.9-.4a1.5 1.5 0 0 1 1.6.3l.7.7a1.5 1.5 0 0 0 2.2 0l.7-.7a1.5 1.5 0 0 1 1.6-.3l.9.4a1.5 1.5 0 0 0 2.1-.8l.4-.9a1.5 1.5 0 0 1 1.3-1v-1a1.5 1.5 0 0 1-1.3-1l-.4-.9a1.5 1.5 0 0 0-2.1-.8l-.9.4a1.5 1.5 0 0 1-1.6-.3l-.7-.7zM8 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
-                <span id="i18n-nav-settings">Pengaturan</span>
-            </div>
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required autocomplete="off">
         </div>
 
-        <!-- Main Display Content Area -->
-        <div class="main-content" id="mainContent">
-            <div class="content-placeholder" id="defaultContent">
-                <h1 id="i18n-dash-title">Sistem Utama</h1>
-                <p id="i18n-dash-desc">Sesi login aktif. Selamat bekerja.</p>
-            </div>
-
-            <!-- Target Iframe Embed -->
-            <iframe id="appIframe" class="embed-iframe" src="about:blank"></iframe>
+        <div class="input-group">
+          <label for="password">Kata Sandi</label>
+          <input type="password" id="password" required>
         </div>
+
+        <div class="options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe"> Ingat Saya
+          </label>
+        </div>
+
+        <button type="submit" id="btnLogin" class="btn-login">Masuk</button>
+      </form>
     </div>
+  </div>
 
-    <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwspXjXbws_klCg42p8Vcl8HjN3YXSY9Ky6d9UDKSuGXXa84Pdhwc_g3UQZjccy2hkr0Q/exec';
-        
-        // Target Github URL via raw.githack CDN untuk render HTML utuh
-        const CREATE_USER_URL = 'https://raw.githack.com/anantaiqqi-beep/INSTRUCT-SAP/baa2501d63d424d4415e6d74cf553558cf1321fc/SU01.html';
+  <!-- VIEW 2: DASHBOARD -->
+  <div id="dashboardView">
+    <nav class="navbar">
+      <div class="nav-links">
+        <a href="#">Menu</a>
+        <a href="#">Recents</a>
+        <a href="#">User</a>
+        <a href="#">Setting</a>
+      </div>
 
-        const sapLoader = {
-            element: document.getElementById('sapLoading'),
-            start() { this.element.classList.add('active'); },
-            stop() { this.element.classList.remove('active'); }
-        };
+      <div class="user-profile-container">
+        <div class="user-profile" id="userProfileBtn">
+          <div class="avatar" id="userAvatar">A</div>
+          <span class="username-text" id="displayUsername">User</span>
+        </div>
 
-        const i18nDict = {
-            id: {
-                panelTitle: 'Login Sistem',
-                clientLabel: 'Klien',
-                usernameLabel: 'Nama Pengguna',
-                passwordLabel: 'Kata Sandi',
-                languageLabel: 'Bahasa',
-                signInBtn: 'Masuk',
-                navDashboard: 'Dashboard',
-                navUserMgmt: 'User Managements',
-                navAnalytics: 'Analisis',
-                navInventory: 'Inventaris',
-                navSettings: 'Pengaturan',
-                dashTitle: 'Sistem Utama',
-                dashDesc: 'Sesi login aktif. Selamat bekerja.'
-            },
-            en: {
-                panelTitle: 'System Login',
-                clientLabel: 'Client',
-                usernameLabel: 'Username',
-                passwordLabel: 'Password',
-                languageLabel: 'Language',
-                signInBtn: 'Sign In',
-                navDashboard: 'Dashboard',
-                navUserMgmt: 'User Managements',
-                navAnalytics: 'Analytics',
-                navInventory: 'Inventory',
-                navSettings: 'Settings',
-                dashTitle: 'Main System',
-                dashDesc: 'Login session active. Welcome back.'
-            },
-            jp: {
-                panelTitle: 'システムログイン',
-                clientLabel: 'クライアント',
-                usernameLabel: 'ユーザー名',
-                passwordLabel: 'パスワード',
-                languageLabel: '言語',
-                signInBtn: 'サインイン',
-                navDashboard: 'ダッシュボード',
-                navUserMgmt: 'ユーザー管理',
-                navAnalytics: '分析',
-                navInventory: '在庫',
-                navSettings: '設定',
-                dashTitle: 'メインシステム',
-                dashDesc: 'ログインセッションがアクティブです。'
-            }
-        };
+        <div class="profile-popup" id="profilePopup">
+          <button class="btn-logout" id="btnLogout">Logout</button>
+        </div>
+      </div>
+    </nav>
+  </div>
 
-        let highestZIndex = 100;
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyaQDJBe9Rp0yyFFpOxKI_9l6KkR0viwNj_IFzwxMsUtnl0uGN8nFrbVGRQOnEyc5y3Q/exec';
 
-        class Win11Panel {
-            constructor(options = {}) {
-                this.title = options.title || 'Panel Window';
-                this.bodyContent = options.bodyContent || '';
-                this.footerContent = options.footerContent || '';
-                this.width = options.width || 280;
-                this.height = options.height || 280;
-                this.x = options.x || 80;
-                this.y = options.y || 60;
-                this.minWidth = options.minWidth || 200;
-                this.minHeight = options.minHeight || 180;
+    const loginView = document.getElementById('loginView');
+    const dashboardView = document.getElementById('dashboardView');
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const rememberMeCheckbox = document.getElementById('rememberMe');
+    const btnLogin = document.getElementById('btnLogin');
 
-                this.isMaximized = false;
-                this.isCollapsed = false;
-                this.prevRect = {};
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const profilePopup = document.getElementById('profilePopup');
+    const btnLogout = document.getElementById('btnLogout');
+    const displayUsername = document.getElementById('displayUsername');
+    const userAvatar = document.getElementById('userAvatar');
 
-                this.init();
-            }
+    // Load data lokal & sesi saat pertama dibuka
+    window.addEventListener('DOMContentLoaded', () => {
+      const activeUser = sessionStorage.getItem('activeUser');
+      if (activeUser) {
+        showDashboard(activeUser);
+        return;
+      }
 
-            init() {
-                this.el = document.createElement('div');
-                this.el.className = 'win11-panel';
-                this.el.style.width = `${this.width}px`;
-                this.el.style.height = `${this.height}px`;
-                this.el.style.left = `${this.x}px`;
-                this.el.style.top = `${this.y}px`;
-                this.bringToFront();
+      const savedUsername = localStorage.getItem('savedUsername');
+      const isRemembered = localStorage.getItem('rememberUser') === 'true';
+      if (isRemembered && savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberMeCheckbox.checked = true;
+      }
+    });
 
-                this.el.innerHTML = `
-                    <div class="title-bar">
-                        <span class="title" id="panelTitleEl">${this.title}</span>
-                        <div class="controls">
-                            <button class="btn-win11 btn-collapse" title="Minimize/Expand">
-                                <svg viewBox="0 0 10 10" style="width:8px;height:8px;"><rect x="0" y="4.5" width="10" height="1.2"/></svg>
-                            </button>
-                            <button class="btn-win11 btn-max-restore" title="Maximize">
-                                <svg class="icon-max" viewBox="0 0 10 10" style="width:8px;height:8px;"><path d="M0,0 v10 h10 v-10 h-10 Z M9,9 h-8 v-8 h8 v8 Z"/></svg>
-                                <svg class="icon-restore" viewBox="0 0 10 10" style="width:8px;height:8px;display:none;"><path d="M2,0 v2 h-2 v8 h8 v-2 h2 v-8 h-8 Z M7,9 h-6 v-6 h6 v6 Z M9,7 h-1 v-4 h-4 v-1 h5 v5 Z"/></svg>
-                            </button>
-                            <button class="btn-win11 btn-close" title="Close">
-                                <svg viewBox="0 0 10 10" style="width:8px;height:8px;"><path d="M0.5,0 L0,0.5 L4.5,5 L0,9.5 L0.5,10 L5,5.5 L9.5,10 L10,9.5 L5.5,5 L10,0.5 L9.5,0 L5,4.5 Z"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="panel-body">${this.bodyContent}</div>
-                    <div class="panel-footer">${this.footerContent}</div>
-                    <div class="resizer n"></div>
-                    <div class="resizer s"></div>
-                    <div class="resizer e"></div>
-                    <div class="resizer w"></div>
-                    <div class="resizer nw"></div>
-                    <div class="resizer ne"></div>
-                    <div class="resizer sw"></div>
-                    <div class="resizer se"></div>
-                `;
+    // Proses Submit Form Login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-                document.body.appendChild(this.el);
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
 
-                this.titleBar = this.el.querySelector('.title-bar');
-                this.btnCollapse = this.el.querySelector('.btn-collapse');
-                this.btnMaxRestore = this.el.querySelector('.btn-max-restore');
-                this.btnClose = this.el.querySelector('.btn-close');
-                this.iconMax = this.el.querySelector('.icon-max');
-                this.iconRestore = this.el.querySelector('.icon-restore');
+      btnLogin.disabled = true;
+      btnLogin.innerText = 'Memproses...';
 
-                this.el.addEventListener('mousedown', () => this.bringToFront());
-                this.initDrag();
-                this.initResize();
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+        const result = await response.json();
 
-                this.btnCollapse.addEventListener('click', () => this.toggleCollapse());
-                this.btnMaxRestore.addEventListener('click', () => this.toggleMaximize());
-                this.btnClose.addEventListener('click', () => this.close());
-            }
+        if (result.status === 'success') {
+          if (rememberMeCheckbox.checked) {
+            localStorage.setItem('savedUsername', username);
+            localStorage.setItem('rememberUser', 'true');
+          } else {
+            localStorage.removeItem('savedUsername');
+            localStorage.removeItem('rememberUser');
+          }
 
-            bringToFront() {
-                highestZIndex++;
-                this.el.style.zIndex = highestZIndex;
-            }
-
-            initDrag() {
-                let startX, startY, initX, initY;
-
-                const onMouseMove = (e) => {
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
-                    this.el.style.left = `${initX + dx}px`;
-                    this.el.style.top = `${initY + dy}px`;
-                };
-
-                const onMouseUp = () => {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                };
-
-                this.titleBar.addEventListener('mousedown', (e) => {
-                    if (e.target.closest('.controls') || this.isMaximized) return;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    initX = this.el.offsetLeft;
-                    initY = this.el.offsetTop;
-
-                    document.addEventListener('mousemove', onMouseMove);
-                    document.addEventListener('mouseup', onMouseUp);
-                });
-            }
-
-            initResize() {
-                const resizers = this.el.querySelectorAll('.resizer');
-
-                resizers.forEach(resizer => {
-                    resizer.addEventListener('mousedown', (e) => {
-                        if (this.isMaximized || this.isCollapsed) return;
-                        e.preventDefault();
-
-                        const startX = e.clientX;
-                        const startY = e.clientY;
-                        const startWidth = this.el.offsetWidth;
-                        const startHeight = this.el.offsetHeight;
-                        const startLeft = this.el.offsetLeft;
-                        const startTop = this.el.offsetTop;
-
-                        const onMouseMove = (moveEvent) => {
-                            const dx = moveEvent.clientX - startX;
-                            const dy = moveEvent.clientY - startY;
-
-                            if (resizer.classList.contains('e') || resizer.classList.contains('ne') || resizer.classList.contains('se')) {
-                                const newWidth = startWidth + dx;
-                                if (newWidth >= this.minWidth) this.el.style.width = `${newWidth}px`;
-                            }
-                            if (resizer.classList.contains('s') || resizer.classList.contains('sw') || resizer.classList.contains('se')) {
-                                const newHeight = startHeight + dy;
-                                if (newHeight >= this.minHeight) this.el.style.height = `${newHeight}px`;
-                            }
-                            if (resizer.classList.contains('w') || resizer.classList.contains('nw') || resizer.classList.contains('sw')) {
-                                const newWidth = startWidth - dx;
-                                if (newWidth >= this.minWidth) {
-                                    this.el.style.width = `${newWidth}px`;
-                                    this.el.style.left = `${startLeft + dx}px`;
-                                }
-                            }
-                            if (resizer.classList.contains('n') || resizer.classList.contains('nw') || resizer.classList.contains('ne')) {
-                                const newHeight = startHeight - dy;
-                                if (newHeight >= this.minHeight) {
-                                    this.el.style.height = `${newHeight}px`;
-                                    this.el.style.top = `${startTop + dy}px`;
-                                }
-                            }
-                        };
-
-                        const onMouseUp = () => {
-                            document.removeEventListener('mousemove', onMouseMove);
-                            document.removeEventListener('mouseup', onMouseUp);
-                        };
-
-                        document.addEventListener('mousemove', onMouseMove);
-                        document.addEventListener('mouseup', onMouseUp);
-                    });
-                });
-            }
-
-            toggleCollapse() {
-                if (!this.isCollapsed) {
-                    this.savedHeight = this.el.style.height;
-                    this.el.classList.add('collapsed');
-                    this.isCollapsed = true;
-                } else {
-                    this.el.classList.remove('collapsed');
-                    this.el.style.height = this.savedHeight;
-                    this.isCollapsed = false;
-                }
-            }
-
-            toggleMaximize() {
-                if (this.isCollapsed) return;
-                if (!this.isMaximized) {
-                    this.prevRect = {
-                        top: this.el.offsetTop,
-                        left: this.el.offsetLeft,
-                        width: this.el.offsetWidth,
-                        height: this.el.offsetHeight
-                    };
-                    this.el.classList.add('maximized');
-                    this.iconMax.style.display = 'none';
-                    this.iconRestore.style.display = 'block';
-                    this.btnMaxRestore.title = "Restore";
-                    this.isMaximized = true;
-                } else {
-                    this.el.classList.remove('maximized');
-                    this.el.style.top = `${this.prevRect.top}px`;
-                    this.el.style.left = `${this.prevRect.left}px`;
-                    this.el.style.width = `${this.prevRect.width}px`;
-                    this.el.style.height = `${this.prevRect.height}px`;
-                    this.iconMax.style.display = 'block';
-                    this.iconRestore.style.display = 'none';
-                    this.btnMaxRestore.title = "Maximize";
-                    this.isMaximized = false;
-                }
-            }
-
-            close() {
-                this.el.remove();
-            }
+          sessionStorage.setItem('activeUser', result.username);
+          showDashboard(result.username);
+        } else {
+          alert('Username atau Password salah!');
         }
+      } catch (err) {
+        alert('Gagal terhubung ke database.');
+      } finally {
+        btnLogin.disabled = false;
+        btnLogin.innerText = 'Masuk';
+      }
+    });
 
-        const loginBodyTemplate = `
-            <form class="login-form" id="loginForm">
-                <div class="form-content">
-                    <div class="form-group">
-                        <label for="client" id="lbl-client">Klien</label>
-                        <input type="text" id="client" form="loginForm" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="username" id="lbl-username">Nama Pengguna</label>
-                        <input type="text" id="username" form="loginForm" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" id="lbl-password">Kata Sandi</label>
-                        <input type="password" id="password" form="loginForm" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="language" id="lbl-language">Bahasa</label>
-                        <select id="language" form="loginForm">
-                            <option value="id">Bahasa Indonesia (ID)</option>
-                            <option value="en">English (EN)</option>
-                            <option value="jp">Japanese (JP)</option>
-                        </select>
-                    </div>
-                    <div class="error-message" id="errorMsg"></div>
-                </div>
-            </form>
-        `;
+    // Tampilkan Dashboard & Sembunyikan Form Login
+    function showDashboard(username) {
+      loginView.style.display = 'none';
+      dashboardView.style.display = 'block';
 
-        const loginFooterTemplate = `
-            <button type="submit" form="loginForm" class="btn-soft btn-submit" id="btn-submit-text">Masuk</button>
-        `;
+      displayUsername.innerText = username;
+      userAvatar.innerText = username.charAt(0).toUpperCase();
+    }
 
-        const loginPanel = new Win11Panel({
-            title: 'Login Sistem',
-            bodyContent: loginBodyTemplate,
-            footerContent: loginFooterTemplate,
-            x: Math.max(10, (window.innerWidth - 260) / 2),
-            y: Math.max(10, (window.innerHeight - 300) / 2),
-            width: 260,
-            height: 300
-        });
+    // Toggle Pop-up Logout
+    userProfileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profilePopup.classList.toggle('active');
+    });
 
-        document.body.addEventListener('change', (e) => {
-            if (e.target.id === 'language') {
-                sapLoader.start();
-                setTimeout(() => {
-                    const lang = e.target.value;
-                    const dict = i18nDict[lang] || i18nDict.id;
-                    document.getElementById('panelTitleEl').innerText = dict.panelTitle;
-                    document.getElementById('lbl-client').innerText = dict.clientLabel;
-                    document.getElementById('lbl-username').innerText = dict.usernameLabel;
-                    document.getElementById('lbl-password').innerText = dict.passwordLabel;
-                    document.getElementById('lbl-language').innerText = dict.languageLabel;
-                    document.getElementById('btn-submit-text').innerText = dict.signInBtn;
-                    sapLoader.stop();
-                }, 200);
-            }
-        });
+    document.addEventListener('click', () => {
+      profilePopup.classList.remove('active');
+    });
 
-        document.body.addEventListener('submit', async (e) => {
-            if (e.target.id === 'loginForm') {
-                e.preventDefault();
-                const errorEl = document.getElementById('errorMsg');
-                errorEl.style.display = 'none';
-
-                const client = document.getElementById('client').value;
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const selectedLang = document.getElementById('language').value;
-
-                sapLoader.start();
-
-                try {
-                    const response = await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ client, username, password })
-                    });
-
-                    const result = await response.json();
-                    sapLoader.stop();
-
-                    if (result.success) {
-                        const dict = i18nDict[selectedLang] || i18nDict.id;
-                        document.getElementById('i18n-nav-dashboard').innerText = dict.navDashboard;
-                        document.getElementById('i18n-nav-usermgmt').innerText = dict.navUserMgmt;
-                        document.getElementById('i18n-nav-analytics').innerText = dict.navAnalytics;
-                        document.getElementById('i18n-nav-inventory').innerText = dict.navInventory;
-                        document.getElementById('i18n-nav-settings').innerText = dict.navSettings;
-                        document.getElementById('i18n-dash-title').innerText = dict.dashTitle;
-                        document.getElementById('i18n-dash-desc').innerText = dict.dashDesc;
-
-                        loginPanel.close();
-                        document.getElementById('dashboard').classList.add('active');
-                    } else {
-                        errorEl.innerText = result.message || 'Login gagal.';
-                        errorEl.style.display = 'block';
-                    }
-                } catch (err) {
-                    sapLoader.stop();
-                    errorEl.innerText = 'Gagal terhubung ke server.';
-                    errorEl.style.display = 'block';
-                }
-            }
-        });
-
-        // SAP Tree Interactivity Logic with Smooth Transitions
-        const nodeUserMgmt = document.getElementById('nodeUserMgmt');
-        const arrowUserMgmt = document.getElementById('arrowUserMgmt');
-        const childrenUserMgmt = document.getElementById('childrenUserMgmt');
-        const itemCreateUser = document.getElementById('itemCreateUser');
-
-        const defaultContent = document.getElementById('defaultContent');
-        const appIframe = document.getElementById('appIframe');
-
-        // Toggle Folder User Management (Smooth Expand / Collapse)
-        nodeUserMgmt.addEventListener('click', () => {
-            const isOpen = childrenUserMgmt.classList.contains('open');
-            if (isOpen) {
-                childrenUserMgmt.style.maxHeight = '0px';
-                childrenUserMgmt.classList.remove('open');
-                arrowUserMgmt.classList.remove('expanded');
-            } else {
-                childrenUserMgmt.classList.add('open');
-                childrenUserMgmt.style.maxHeight = childrenUserMgmt.scrollHeight + 'px';
-                arrowUserMgmt.classList.add('expanded');
-            }
-        });
-
-        // Click Event: Create User (Load Target URL into Iframe)
-        itemCreateUser.addEventListener('click', (e) => {
-            e.stopPropagation();
-
-            document.querySelectorAll('.tree-node').forEach(node => node.classList.remove('active'));
-            itemCreateUser.classList.add('active');
-
-            sapLoader.start();
-
-            defaultContent.style.display = 'none';
-            appIframe.src = CREATE_USER_URL;
-            appIframe.classList.add('active');
-
-            appIframe.onload = () => {
-                sapLoader.stop();
-            };
-        });
-
-        // General Navigation Node Switching
-        document.querySelectorAll('.tree-node').forEach(node => {
-            if (node.id !== 'nodeUserMgmt' && node.id !== 'itemCreateUser') {
-                node.addEventListener('click', function() {
-                    document.querySelectorAll('.tree-node').forEach(el => el.classList.remove('active'));
-                    this.classList.add('active');
-
-                    sapLoader.start();
-                    setTimeout(() => {
-                        appIframe.classList.remove('active');
-                        appIframe.src = 'about:blank';
-                        defaultContent.style.display = 'flex';
-                        sapLoader.stop();
-                    }, 200);
-                });
-            }
-        });
-
-        // Fixed Drag Resizer Logic for Sidebar
-        const sidebar = document.getElementById('sidebar');
-        const sidebarResizer = document.getElementById('sidebarResizer');
-
-        sidebarResizer.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            sidebarResizer.classList.add('resizing');
-            document.body.style.cursor = 'ew-resize';
-
-            const onMouseMove = (moveEvent) => {
-                const maxAllowedWidth = window.innerWidth - 100;
-                let newWidth = moveEvent.clientX;
-                if (newWidth < 120) newWidth = 120;
-                if (newWidth > maxAllowedWidth) newWidth = maxAllowedWidth;
-                sidebar.style.width = `${newWidth}px`;
-            };
-
-            const onMouseUp = () => {
-                sidebarResizer.classList.remove('resizing');
-                document.body.style.cursor = 'default';
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-            };
-
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
-    </script>
+    // Logout Action
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('activeUser');
+      profilePopup.classList.remove('active');
+      dashboardView.style.display = 'none';
+      loginView.style.display = 'flex';
+      passwordInput.value = '';
+    });
+  </script>
 </body>
 </html>
